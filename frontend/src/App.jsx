@@ -12,11 +12,10 @@ function FridgePage() {
   const [items, setItems] = useState([]);
 
   const fetchItems = async () => {
-    const res = await fetch("http://localhost:5000/api/items");
+    const res = await fetch("http://localhost:3001/api/items");
     const data = await res.json();
     setItems(data);
   };
-
   return (
     <PageContainer>
       <Header title="🧊 Tsunami Fridge Tracker" />
