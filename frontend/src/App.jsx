@@ -5,16 +5,16 @@ function App() {
   const [name, setName] = useState("");
 
   const fetchItems = async () => {
-    const res = await fetch("http://localhost:5000/api/items");
+    const res = await fetch("http://localhost:3001/api/items");
     const data = await res.json();
     setItems(data);
   };
 
   const addItem = async () => {
-    await fetch("http://localhost:5000/api/items", {
+    await fetch("http://localhost:3001/api/items", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, expiry: "2025-10-10" }),
+      body: JSON.stringify({ name, expiryDate: "2025-01-20" }),
     });
     setName("");
     fetchItems();
@@ -34,7 +34,7 @@ function App() {
       <ul>
         {items.map((i, idx) => (
           <li key={idx}>
-            {i.name} - {i.expiry}
+            {i.name} - {i.expiryDate}
           </li>
         ))}
       </ul>
