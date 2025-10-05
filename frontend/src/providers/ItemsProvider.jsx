@@ -29,9 +29,9 @@ export function ItemsProvider({ children }) {
       setError(err.message);
       // Set some default items for testing
       setItems([
-        { id: 1, name: "Sample Milk", category: "Dairy", expiryDate: "2024-01-20", icon: "🥛", dateBought: "2024-01-15" },
-        { id: 2, name: "Sample Bread", category: "Other", expiryDate: "2024-01-18", icon: "🍞", dateBought: "2024-01-14" },
-        { id: 3, name: "Sample Apples", category: "Fruits", expiryDate: "2024-01-25", icon: "🍎", dateBought: "2024-01-13" }
+        { id: 1, name: "Sample Milk", category: "Dairy", expiryDate: "2024-01-20", icon: "🥛", purchasedDate: "2024-01-15" },
+        { id: 2, name: "Sample Bread", category: "Other", expiryDate: "2024-01-18", icon: "🍞", purchasedDate: "2024-01-14" },
+        { id: 3, name: "Sample Apples", category: "Produce", expiryDate: "2024-01-25", icon: "🍎", purchasedDate: "2024-01-13" }
       ]);
     } finally {
       setLoading(false);
@@ -84,7 +84,7 @@ export function ItemsProvider({ children }) {
       const backendUpdates = {};
       if (updates.name) backendUpdates.name = updates.name;
       if (updates.category) backendUpdates.category = updates.category.toLowerCase();
-      if (updates.dateBought) backendUpdates.purchasedDate = updates.dateBought;
+      if (updates.purchasedDate) backendUpdates.purchasedDate = updates.purchasedDate;
       if (updates.expiryPeriod) backendUpdates.expiryPeriod = updates.expiryPeriod;
       if (updates.status) backendUpdates.status = updates.status;
 

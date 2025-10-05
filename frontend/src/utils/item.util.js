@@ -36,7 +36,7 @@ export const transformBackendItem = (backendItem) => ({
   name: backendItem.name,
   category: backendItem.category.charAt(0).toUpperCase() + backendItem.category.slice(1),
   expiryDate: backendItem.expiryDate,
-  dateBought: backendItem.purchasedDate,
+  purchasedDate: backendItem.purchasedDate,
   icon: getItemIcon(backendItem.category, backendItem.name),
   status: backendItem.status,
   generatedBy: backendItem.generatedBy,
@@ -49,7 +49,7 @@ export const transformBackendItem = (backendItem) => ({
 export const transformFrontendItem = (frontendItem) => ({
   name: frontendItem.name,
   category: frontendItem.category.toLowerCase(),
-  purchasedDate: frontendItem.dateBought || new Date().toISOString().split('T')[0],
+  purchasedDate: frontendItem.purchasedDate || new Date().toISOString().split('T')[0],
   expiryPeriod: frontendItem.expiryPeriod || 7,
   status: "confirmed",
   generatedBy: "manual",

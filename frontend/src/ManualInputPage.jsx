@@ -15,7 +15,7 @@ const ManualInputPage = () => {
     category: ''
   });
 
-  const categories = ['Fruits', 'Vegetables', 'Dairy', 'Meat', 'Other'];
+  const categories = ['Produce', 'Dairy', 'Meat', 'Pantry', 'Other'];
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -30,7 +30,7 @@ const ManualInputPage = () => {
       name: formData.name,
       category: formData.category,
       expiryDate: formData.expirationDate,
-      dateBought: formData.todaysDate,
+      purchasedDate: formData.todaysDate,
       icon: getCategoryIcon(formData.category)
     };
     addItem(newItem);
@@ -41,10 +41,10 @@ const ManualInputPage = () => {
 
   const getCategoryIcon = (category) => {
     const icons = {
-      'Fruits': '🍎',
-      'Vegetables': '🥕',
+      'Produce': '🥬',
       'Dairy': '🥛',
       'Meat': '🥩',
+      'Pantry': '🥫',
       'Other': '📦'
     };
     return icons[category] || '📦';

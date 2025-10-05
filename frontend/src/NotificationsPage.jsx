@@ -48,7 +48,7 @@ const NotificationsPage = () => {
                     <span>{item.name}</span>
                   </div>
                   <div className="flex-1 text-center">
-                    {item.dateBought}
+                    {item.purchasedDate}
                   </div>
                   <div className="flex-1 text-center text-red-300">
                     {item.expiryDate}

@@ -26,35 +26,35 @@ function CalendarPage() {
   const foodExpirationData = {
     "2025-01-15": [
       { name: "Milk", category: "Dairy", icon: "🥛" },
-      { name: "Bananas", category: "Fruits", icon: "🍌" },
+      { name: "Bananas", category: "Produce", icon: "🍌" },
       { name: "Bread", category: "Other", icon: "🍞" }
     ],
     "2025-01-16": [
       { name: "Yogurt", category: "Dairy", icon: "🥛" },
-      { name: "Strawberries", category: "Fruits", icon: "🍓" }
+      { name: "Strawberries", category: "Produce", icon: "🍓" }
     ],
     "2025-10-04": [
       { name: "Chicken Breast", category: "Meat", icon: "🥩" },
-      { name: "Spinach", category: "Vegetables", icon: "🥬" },
+      { name: "Spinach", category: "Produce", icon: "🥬" },
       { name: "Cheese", category: "Dairy", icon: "🧀" }
     ],
     "2025-10-05": [
       { name: "Ground Beef", category: "Meat", icon: "🥩" },
-      { name: "Carrots", category: "Vegetables", icon: "🥕" }
+      { name: "Carrots", category: "Produce", icon: "🥕" }
     ],
     "2025-01-03": [
       { name: "Salmon", category: "Meat", icon: "🐟" },
-      { name: "Apples", category: "Fruits", icon: "🍎" },
+      { name: "Apples", category: "Produce", icon: "🍎" },
       { name: "Eggs", category: "Dairy", icon: "🥚" }
     ],
     "2025-01-02": [
       { name: "Pork Chops", category: "Meat", icon: "🥩" },
-      { name: "Broccoli", category: "Vegetables", icon: "🥦" },
+      { name: "Broccoli", category: "Produce", icon: "🥦" },
       { name: "Butter", category: "Dairy", icon: "🧈" }
     ],
     "2025-01-05": [
       { name: "Turkey", category: "Meat", icon: "🦃" },
-      { name: "Oranges", category: "Fruits", icon: "🍊" }
+      { name: "Oranges", category: "Produce", icon: "🍊" }
     ]
   };
 
@@ -100,7 +100,7 @@ function CalendarPage() {
         category: "Other", // This would be determined from image analysis
         expiryDate: selectedDate.toISOString().split('T')[0],
         icon: "📦",
-        dateBought: new Date().toISOString().split('T')[0]
+        purchasedDate: new Date().toISOString().split('T')[0]
       };
       addItem(newItem);
       
@@ -339,7 +339,7 @@ function CalendarPage() {
                 </div>
               )},
               { content: item.category, className: "text-white/70" },
-              { content: item.dateBought, className: "text-white/70" }
+              { content: item.purchasedDate, className: "text-white/70" }
             ])}
             emptyMessage="No items expiring on this date"
           />

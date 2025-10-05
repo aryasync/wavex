@@ -7,11 +7,11 @@ const HorizontalBarChart = ({ data = [], title = "Fridge Contents", onCategoryCl
 
   // Default data with better color scheme and navigation routes
   const defaultData = [
-    { label: 'Fruits', value: 30, color: '#3B82F6', route: '/category/fruits' },
-    { label: 'Vegetables', value: 25, color: '#10B981', route: '/category/vegetables' },
+    { label: 'Produce', value: 30, color: '#10B981', route: '/category/produce' },
     { label: 'Dairy', value: 20, color: '#F59E0B', route: '/category/dairy' },
     { label: 'Meat', value: 15, color: '#EF4444', route: '/category/meat' },
-    { label: 'Other', value: 10, color: '#8B5CF6', route: '/category/other' }
+    { label: 'Pantry', value: 12, color: '#8B5CF6', route: '/category/pantry' },
+    { label: 'Other', value: 10, color: '#6B7280', route: '/category/other' }
   ];
 
   // Memoize chart calculations for better performance

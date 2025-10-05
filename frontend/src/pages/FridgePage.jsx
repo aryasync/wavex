@@ -40,11 +40,11 @@ function FridgePage() {
     
     // Convert to chart data format with colors
     const colors = {
-      'fruits': '#3B82F6',
-      'vegetables': '#10B981', 
+      'produce': '#10B981',
       'dairy': '#F59E0B',
       'meat': '#EF4444',
-      'other': '#8B5CF6'
+      'pantry': '#8B5CF6',
+      'other': '#6B7280'
     };
     
     return Object.entries(categoryCounts).map(([category, count]) => ({
