@@ -2,6 +2,7 @@ import { useState } from "react";
 import SectionCard from "./components/SectionCard";
 import FuturisticButton from "./components/FuturisticButton";
 import ItemsTable from "./components/ItemsTable";
+import ConfirmationModal from "./components/ConfirmationModal";
 import { useItems } from "./hooks/useItems";
 
 function CalendarPage() {
@@ -9,6 +10,8 @@ function CalendarPage() {
 
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   const monthNames = [
     "January",
@@ -164,9 +167,18 @@ function CalendarPage() {
     return items.filter((item) => item.expiryDate === dateString);
   };
 
-  const handleDeleteItem = async (item) => {
+  const handleDeleteItem = (item) => {
+    setItemToDelete(item);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteItem = async () => {
+    if (!itemToDelete) return;
+    
     try {
-      await removeItem(item.id);
+      await removeItem(itemToDelete.id);
+      setShowDeleteModal(false);
+      setItemToDelete(null);
     } catch (error) {
       console.error("Error deleting item:", error);
     }
@@ -261,6 +273,21 @@ function CalendarPage() {
           />
         </SectionCard>
       )}
+
+      {/* Delete Item Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setItemToDelete(null);
+        }}
+        onConfirm={confirmDeleteItem}
+        title="Delete Item"
+        message={`Are you sure you want to delete "${itemToDelete?.product || itemToDelete?.name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+      />
     </div>
   );
 }

@@ -3,6 +3,7 @@ import FuturisticButton from "./components/FuturisticButton";
 import ItemsTable from "./components/ItemsTable";
 import RingPieChart from "./components/RingPieChart";
 import SectionCard from "./components/SectionCard";
+import ConfirmationModal from "./components/ConfirmationModal";
 import { useItems } from "./contexts/ItemsContext";
 import { useCategories } from "./hooks/useCategories";
 
@@ -19,6 +20,8 @@ function Home() {
     getCategoryColor,
   } = useCategories();
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   /**
    * Calculate category data showing all categories, even those with 0 items
@@ -75,9 +78,18 @@ function Home() {
   /**
    * Handle item deletion
    */
-  const handleDeleteItem = async (item) => {
+  const handleDeleteItem = (item) => {
+    setItemToDelete(item);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDeleteItem = async () => {
+    if (!itemToDelete) return;
+    
     try {
-      await removeItem(item.id);
+      await removeItem(itemToDelete.id);
+      setShowDeleteModal(false);
+      setItemToDelete(null);
     } catch (error) {
       console.error("Error deleting item:", error);
     }
@@ -130,6 +142,21 @@ function Home() {
           />
         )}
       </SectionCard>
+
+      {/* Delete Item Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        onClose={() => {
+          setShowDeleteModal(false);
+          setItemToDelete(null);
+        }}
+        onConfirm={confirmDeleteItem}
+        title="Delete Item"
+        message={`Are you sure you want to delete "${itemToDelete?.product || itemToDelete?.name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+      />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import SectionCard from './components/SectionCard';
 import FuturisticButton from './components/FuturisticButton';
+import ConfirmationModal from './components/ConfirmationModal';
 import { useNotifications } from './hooks/useNotifications';
 import { useToast } from './hooks/useToast';
 import SchedulerStatus from './components/Notifications/SchedulerStatus';
@@ -24,6 +25,7 @@ const NotificationsPage = () => {
 
   const { toasts, removeToast, showSuccess, showError } = useToast();
   const [isTriggering, setIsTriggering] = useState(false);
+  const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
 
   // Handle scheduler trigger
   const handleTriggerScheduler = async () => {
@@ -39,6 +41,17 @@ const NotificationsPage = () => {
       showError(`Error triggering scheduler: ${err.message}`);
     } finally {
       setIsTriggering(false);
+    }
+  };
+
+  // Handle delete all notifications
+  const handleDeleteAll = async () => {
+    const result = await deleteAllNotifications();
+    if (result.success) {
+      showSuccess(`Deleted ${result.count} notifications`);
+      setShowDeleteAllModal(false);
+    } else {
+      showError(`Error: ${result.error}`);
     }
   };
 
@@ -69,16 +82,7 @@ const NotificationsPage = () => {
             {/* Delete All Notifications Button */}
             <FuturisticButton
               variant="danger"
-              onClick={async () => {
-                if (window.confirm('Are you sure you want to delete all notifications? This action cannot be undone.')) {
-                  const result = await deleteAllNotifications();
-                  if (result.success) {
-                    showSuccess(`Deleted ${result.count} notifications`);
-                  } else {
-                    showError(`Error: ${result.error}`);
-                  }
-                }
-              }}
+              onClick={() => setShowDeleteAllModal(true)}
               className="flex-1"
               disabled={notifications.length === 0}
             >
@@ -150,6 +154,18 @@ const NotificationsPage = () => {
         )}
       </SectionCard>
       </div>
+
+      {/* Delete All Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteAllModal}
+        onClose={() => setShowDeleteAllModal(false)}
+        onConfirm={handleDeleteAll}
+        title="Delete All Notifications"
+        message="Are you sure you want to delete all notifications? This action cannot be undone."
+        confirmText="Delete All"
+        cancelText="Cancel"
+        variant="danger"
+      />
     </>
   );
 };
