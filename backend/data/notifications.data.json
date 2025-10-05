@@ -22,5 +22,45 @@
     "createdAt": 1717564800,
     "isRead": false,
     "itemId": null
+  },
+  {
+    "id": "cf9aac3d5ba56c0d09d940780499b1e0",
+    "type": "item_expiry_warning",
+    "message": "Cajun Chicken expires in 3 days",
+    "createdAt": 1759680000,
+    "isRead": false,
+    "itemId": "81354dabbcd8650700aaa5dd8dbe7cd0"
+  },
+  {
+    "id": "bb55f652f8bd32b5d44d0ad3d0be0cf7",
+    "type": "item_expiry_warning",
+    "message": "Croissant expires in 3 days",
+    "createdAt": 1759680000,
+    "isRead": false,
+    "itemId": "af467b6ec6bc4db3850651ff52af648b"
+  },
+  {
+    "id": "e0295364aa08a88fcde41e5e2c37d27c",
+    "type": "item_expiry_warning",
+    "message": "Ground Chicken expires in 2 days",
+    "createdAt": 1759680000,
+    "isRead": false,
+    "itemId": "c7a5dbc35f1cfec397fd82a9eaa10de3"
+  },
+  {
+    "id": "c81b8f3a27e46bd1b1e07285351560b8",
+    "type": "item_expiry_warning",
+    "message": "Garlic Baguette expires in 3 days",
+    "createdAt": 1759680000,
+    "isRead": false,
+    "itemId": "959d506469d5917b18c032a7664f562d"
+  },
+  {
+    "id": "31b041b572f32f67fb07f338ce25b42b",
+    "type": "item_expiry_warning",
+    "message": "Kaiser Bun expires in 3 days",
+    "createdAt": 1759680000,
+    "isRead": false,
+    "itemId": "19d4b8e007f23523174bc23564bb62ed"
   }
 ]

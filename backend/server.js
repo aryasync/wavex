@@ -8,8 +8,20 @@ import { config } from "./config/index.js";
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:5173', // Vite dev server
+    'https://wavex-xi.vercel.app/', // Replace with your actual Vercel URL
+    'https://*.vercel.app' // Allow all Vercel subdomains
+  ],
+  credentials: true
+}));
 app.use(express.json());
+
+// Health check route
+app.get("/api/health", (req, res) => {
+  res.json({ status: "OK", message: "Backend is running!" });
+});
 
 // Routes
 app.use("/api", itemsRouter);
