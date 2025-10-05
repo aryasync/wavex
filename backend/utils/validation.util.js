@@ -15,50 +15,82 @@ export class ItemValidator {
   static validateItem(item, options = {}) {
     const { throwOnError = false, itemIndex = null } = options;
     const errors = [];
-    const validCategories = config.business.supportedCategories;
+    const validCategories = config.business.validCategories;
+    const validStatuses = config.business.validStatuses;
+    const validGeneratedBy = config.business.validGeneratedBy;
+    const validSources = config.business.validSources;
 
-    // Check required fields
-    if (!item.name || typeof item.name !== "string") {
-      const error = "Name is required and must be a string";
+    // Helper function to add error
+    const addError = (message) => {
       if (throwOnError) {
-        throw new Error(itemIndex !== null ? `Item ${itemIndex + 1}: ${error}` : error);
+        throw new Error(itemIndex !== null ? `Item ${itemIndex + 1}: ${message}` : message);
       }
-      errors.push(error);
+      errors.push(message);
+    };
+
+    // Validate required fields
+    if (!item.name || typeof item.name !== "string") {
+      addError("Name is required and must be a string");
     }
 
     if (!item.expiryPeriod || typeof item.expiryPeriod !== "number") {
-      const error = "Expiry period is required and must be a number";
-      if (throwOnError) {
-        throw new Error(itemIndex !== null ? `Item ${itemIndex + 1}: ${error}` : error);
-      }
-      errors.push(error);
+      addError("Expiry period is required and must be a number");
     }
 
-    // Check expiryPeriod is a positive integer
+    // Validate expiryPeriod is a positive integer
     if (item.expiryPeriod && (!Number.isInteger(item.expiryPeriod) || item.expiryPeriod <= 0)) {
-      const error = "Expiry period must be a positive integer";
-      if (throwOnError) {
-        throw new Error(itemIndex !== null ? `Item ${itemIndex + 1}: ${error}` : error);
-      }
-      errors.push(error);
+      addError("Expiry period must be a positive integer");
     }
 
     // Validate expiryPeriod is reasonable (max 365 days)
     if (item.expiryPeriod && item.expiryPeriod > 365) {
-      const error = "Expiry period cannot be more than 365 days";
-      if (throwOnError) {
-        throw new Error(itemIndex !== null ? `Item ${itemIndex + 1}: ${error}` : error);
-      }
-      errors.push(error);
+      addError("Expiry period cannot be more than 365 days");
     }
 
-    // Check category if provided
+    // Validate category if provided
     if (item.category && !validCategories.includes(item.category)) {
-      const error = `Category must be one of: ${validCategories.join(", ")}`;
-      if (throwOnError) {
-        throw new Error(itemIndex !== null ? `Item ${itemIndex + 1}: ${error}` : error);
+      addError(`Category must be one of: ${validCategories.join(", ")}`);
+    }
+
+    // Validate status if provided
+    if (item.status && !validStatuses.includes(item.status)) {
+      addError(`Status must be one of: ${validStatuses.join(", ")}`);
+    }
+
+    // Validate generatedBy if provided
+    if (item.generatedBy && !validGeneratedBy.includes(item.generatedBy)) {
+      addError(`GeneratedBy must be one of: ${validGeneratedBy.join(", ")}`);
+    }
+
+    // Validate source if provided
+    if (item.source && !validSources.includes(item.source)) {
+      addError(`Source must be one of: ${validSources.join(", ")}`);
+    }
+
+    // Validate purchasedDate if provided (should be YYYY-MM-DD format)
+    if (item.purchasedDate && typeof item.purchasedDate === "string") {
+      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+      if (!dateRegex.test(item.purchasedDate)) {
+        addError("PurchasedDate must be in YYYY-MM-DD format");
       }
-      errors.push(error);
+    }
+
+    // Validate expiryDate if provided (should be YYYY-MM-DD format)
+    if (item.expiryDate && typeof item.expiryDate === "string") {
+      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+      if (!dateRegex.test(item.expiryDate)) {
+        addError("ExpiryDate must be in YYYY-MM-DD format");
+      }
+    }
+
+    // Validate createdAt if provided (should be Unix timestamp)
+    if (item.createdAt && (typeof item.createdAt !== "number" || !Number.isInteger(item.createdAt))) {
+      addError("CreatedAt must be a Unix timestamp (integer)");
+    }
+
+    // Validate id if provided (should be string)
+    if (item.id && typeof item.id !== "string") {
+      addError("Id must be a string");
     }
 
     if (throwOnError) {
@@ -95,6 +127,27 @@ export class ItemValidator {
     // Validate the item
     this.validateItem(item, options);
 
+    // Validate source field if present (for AI items)
+    if (item.source !== undefined) {
+      const validSources = config.business.validSources;
+      
+      if (!item.source || typeof item.source !== 'string') {
+        const error = "Source field is required and must be a string";
+        if (options.throwOnError) {
+          throw new Error(options.itemIndex !== null ? `Item ${options.itemIndex + 1}: ${error}` : error);
+        }
+        throw new Error(error);
+      }
+
+      if (!validSources.includes(item.source)) {
+        const error = `Source must be one of: ${validSources.join(", ")}`;
+        if (options.throwOnError) {
+          throw new Error(options.itemIndex !== null ? `Item ${options.itemIndex + 1}: ${error}` : error);
+        }
+        throw new Error(error);
+      }
+    }
+
     // Capitalize the name
     const capitalizedName = this.capitalizeName(item.name);
 
@@ -102,6 +155,7 @@ export class ItemValidator {
       name: capitalizedName,
       category: item.category,
       expiryPeriod: item.expiryPeriod,
+      source: item.source // Include source if present
     };
   }
 }

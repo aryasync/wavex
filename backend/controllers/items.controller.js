@@ -1,5 +1,6 @@
 import ItemService from "../services/items.service.js";
 import AIService from "../services/ai.service.js";
+import { config } from "../config/index.js";
 
 class ItemController {
   constructor() {
@@ -186,9 +187,9 @@ class ItemController {
       }
 
       // Analyze image with AI
-      const aiResponse = await this.aiService.analyzeImage(req.file.buffer);
+      const aiItems = await this.aiService.analyzeImage(req.file.buffer);
       
-      if (aiResponse.length === 0) {
+      if (aiItems.length === 0) {
         return res.json({
           success: true,
           message: "No food items detected in the image",
@@ -197,16 +198,23 @@ class ItemController {
         });
       }
 
-      // Create items from AI response
-      const createdItems = [];
+      // Create pending items from AI response (not confirmed yet)
+      const pendingItems = [];
       const errors = [];
 
-      for (const itemData of aiResponse) {
+      for (const itemData of aiItems) {
         try {
-          const newItem = await this.itemService.createItem(itemData);
-          createdItems.push(newItem);
+          // Add AI-specific metadata
+          const aiItemData = {
+            ...itemData,
+            status: config.business.validStatuses[0], // "pending"
+            generatedBy: config.business.validGeneratedBy[1] // "ai"
+          };
+          
+          const newItem = await this.itemService.createItem(aiItemData);
+          pendingItems.push(newItem);
         } catch (error) {
-          console.error(`Error creating item ${itemData.name}:`, error);
+          console.error(`Error creating pending item ${itemData.name}:`, error);
           errors.push({
             item: itemData,
             error: error.message            
@@ -214,14 +222,13 @@ class ItemController {
         }
       }
 
-      // Return response
+      // Return response with pending items
       const response = {
         success: true,
-        message: `Successfully analyzed image and created ${createdItems.length} items`,
-        items: createdItems,
-        createdCount: createdItems.length,
-        totalDetected: aiResponse.length,
-        aiResponse: aiResponse // TODO remove this
+        message: `AI detected ${pendingItems.length} items - pending confirmation`,
+        items: pendingItems,
+        createdCount: pendingItems.length,
+        totalDetected: aiItems.length
       };
 
       // Include errors if any
@@ -263,6 +270,38 @@ class ItemController {
       });
     }
   }
+
+  /**
+   * Get items by status
+   */
+  async getItemsByStatus(req, res) {
+    try {
+      const { status } = req.params;
+      
+      if (!status) {
+        return res.status(400).json({
+          success: false,
+          message: "Status parameter is required",
+        });
+      }
+
+      const items = await this.itemService.getItemsByStatus(status);
+      
+      res.json({
+        success: true,
+        items: items,
+        count: items.length,
+        status: status
+      });
+    } catch (error) {
+      console.error("Error fetching items by status:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch items by status",
+      });
+    }
+  }
+
 }
 
 export default ItemController;

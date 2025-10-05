@@ -48,6 +48,9 @@ class ItemService {
       purchasedDate: purchasedDate,
       category: data.category || "other",
       createdAt: Math.floor(Date.now() / 1000), // Unix timestamp
+      status: data.status || config.business.validStatuses[1], // "confirmed"
+      generatedBy: data.generatedBy || config.business.validGeneratedBy[0], // "manual"
+      source: data.source || null,
     };
   }
 
@@ -117,6 +120,30 @@ class ItemService {
   async getExpiredItems() {
     const items = await this.getItemsByCategory();
     return items.filter((item) => isDateInPast(item.expiryDate));
+  }
+
+  /**
+   * Get items by status
+   */
+  async getItemsByStatus(status) {
+    const items = await this.getItemsByCategory();
+    return items.filter((item) => item.status === status);
+  }
+
+  /**
+   * Get items by source
+   */
+  async getItemsBySource(source) {
+    const items = await this.getItemsByCategory();
+    return items.filter((item) => item.source === source);
+  }
+
+  /**
+   * Get items by generatedBy
+   */
+  async getItemsByGeneratedBy(generatedBy) {
+    const items = await this.getItemsByCategory();
+    return items.filter((item) => item.generatedBy === generatedBy);
   }
 
   /**

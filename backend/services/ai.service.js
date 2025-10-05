@@ -54,13 +54,20 @@ class AIService {
       const processedImage = await this.processImage(imageBuffer);
       const base64Image = processedImage.toString("base64");
 
-      // Get categories from config
-      const validCategories = config.business.supportedCategories;
-      const categoryList = validCategories.join('|');
+      const validCategories = config.business.validCategories.join('|');
+      const validSources = config.business.validSources.join('|');
       
-      const prompt = `Analyze this image of food items (either receipt or image of food items) and identify all visible food products. For each item, estimate:
+      const prompt = `Analyze this image and determine:
+1. The source type: "${validSources}" (if this is a receipt/paper document) or "groceries" (if this is a photo of actual food items)
+2. All visible food products and their details
+
+For the source type, consider:
+- "${config.business.validSources[0]}": Paper document with text, prices, store information, barcodes
+- "${config.business.validSources[1]}": Actual food items visible in the image, fresh produce, packaged goods
+
+For each food item detected, estimate:
 1. The name of the food item
-2. The category (${validCategories.join(', ')})
+2. The category (${validCategories})
 3. The estimated shelf life in days (expiryPeriod) based on the food's freshness and typical shelf life
 
 Consider factors like:
@@ -73,8 +80,9 @@ Return ONLY a JSON array of objects with this exact structure:
 [
   {
     "name": "string",
-    "category": "${categoryList}",
-    "expiryPeriod": 7
+    "category": "${validCategories}",
+    "expiryPeriod": 7,
+    "source": "${validSources}"
   }
 ]
 
@@ -114,7 +122,14 @@ If no food items are visible, return an empty array [].`;
       }
 
       const aiResponse = JSON.parse(jsonMatch[0]);
-      return this.validateAIResponse(aiResponse);
+      
+      // Validate each item in the array using the validation utility
+      return aiResponse.map((item, index) => {
+        return ItemValidator.validateAndProcessItem(item, {
+          throwOnError: true,
+          itemIndex: index
+        });
+      });
     } catch (error) {
       if (error.message.includes("API key")) {
         throw new Error(
@@ -125,23 +140,6 @@ If no food items are visible, return an empty array [].`;
     }
   }
 
-  /**
-   * Validate AI response against expected schema
-   */
-  validateAIResponse(response) {
-    if (!Array.isArray(response)) {
-      throw new Error("AI response must be an array");
-    }
-
-    const validatedItems = response.map((item, index) => {
-      return ItemValidator.validateAndProcessItem(item, {
-        throwOnError: true,
-        itemIndex: index
-      });
-    });
-
-    return validatedItems;
-  }
 }
 
 export default AIService;

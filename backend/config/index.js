@@ -16,13 +16,16 @@ export const config = {
   business: {
     expiryWarningDays: 3, // Warn 3 days before expiry
     maxItemsPerUser: 100,
-    supportedCategories: [
+    validCategories: [
       "dairy", 
       "meat", 
       "produce", 
       "pantry", 
       "other"
-    ]
+    ],
+    validStatuses: ["pending", "confirmed"],
+    validGeneratedBy: ["manual", "ai"],
+    validSources: ["receipt", "groceries"]
   },
 
   API_Key: process.env.OPENAI_API_KEY,

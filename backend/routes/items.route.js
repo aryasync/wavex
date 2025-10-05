@@ -34,4 +34,7 @@ router.delete("/items/:id", (req, res) => itemController.deleteItem(req, res));
 // AI Image Analysis Route
 router.post("/items/analyze-image", upload.single('image'), (req, res) => itemController.analyzeImage(req, res));
 
+// Items by Status Route
+router.get("/items/status/:status", (req, res) => itemController.getItemsByStatus(req, res));
+
 export default router;
