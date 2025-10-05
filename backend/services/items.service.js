@@ -25,34 +25,6 @@ class ItemService {
     return ItemValidator.validateItem(item);
   }
 
-  /**
-   * Create a new item with defaults
-   */
-  createItemData(data) {
-    const now = new Date().toISOString().split("T")[0]; // Today's date in YYYY-MM-DD
-    const purchasedDate = data.purchasedDate || now;
-    
-    // Calculate expiry date by adding expiryPeriod to purchasedDate
-    const expiryDate = new Date(purchasedDate);
-    expiryDate.setDate(expiryDate.getDate() + data.expiryPeriod);
-    const expiryDateString = expiryDate.toISOString().split("T")[0];
-
-    // Capitalize the first letter of each word in the name
-    const capitalizedName = ItemValidator.capitalizeName(data.name);
-
-    return {
-      id: generateId(),
-      name: capitalizedName,
-      expiryPeriod: data.expiryPeriod,
-      expiryDate: expiryDateString, // Calculated from purchasedDate + expiryPeriod
-      purchasedDate: purchasedDate,
-      category: data.category || "other",
-      createdAt: Math.floor(Date.now() / 1000), // Unix timestamp
-      status: data.status || config.business.validStatuses[1], // "confirmed"
-      generatedBy: data.generatedBy || config.business.validGeneratedBy[0], // "manual"
-      source: data.source || null,
-    };
-  }
 
   /**
    * Calculate expiry date from purchasedDate and expiryPeriod
@@ -139,7 +111,31 @@ class ItemService {
       throw new Error(`Validation failed: ${validation.errors.join(", ")}`);
     }
 
-    const newItem = this.createItemData(itemData);
+    // Transform data into complete item object
+    const now = new Date().toISOString().split("T")[0]; // Today's date in YYYY-MM-DD
+    const purchasedDate = itemData.purchasedDate || now;
+    
+    // Calculate expiry date by adding expiryPeriod to purchasedDate
+    const expiryDate = new Date(purchasedDate);
+    expiryDate.setDate(expiryDate.getDate() + itemData.expiryPeriod);
+    const expiryDateString = expiryDate.toISOString().split("T")[0];
+
+    // Capitalize the first letter of each word in the name
+    const capitalizedName = ItemValidator.capitalizeName(itemData.name);
+
+    const newItem = {
+      id: generateId(),
+      name: capitalizedName,
+      expiryPeriod: itemData.expiryPeriod,
+      expiryDate: expiryDateString, // Calculated from purchasedDate + expiryPeriod
+      purchasedDate: purchasedDate,
+      category: itemData.category || "other",
+      createdAt: Math.floor(Date.now() / 1000), // Unix timestamp
+      status: itemData.status || config.business.validStatuses[1], // "confirmed"
+      generatedBy: itemData.generatedBy || config.business.validGeneratedBy[0], // "manual"
+      source: itemData.source || null,
+    };
+
     const items = await this.getItems();
     items.push(newItem);
 
