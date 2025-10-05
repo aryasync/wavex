@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import sharp from "sharp";
 import { config } from "../config/index.js";
+import { ItemValidator } from "../utils/validation.util.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -132,53 +133,11 @@ If no food items are visible, return an empty array [].`;
       throw new Error("AI response must be an array");
     }
 
-    // Get categories from config
-    const validCategories = config.business.supportedCategories;
-    const today = new Date();
-    const maxFutureDate = new Date();
-    maxFutureDate.setFullYear(today.getFullYear() + 1); // Max 1 year in future
-
     const validatedItems = response.map((item, index) => {
-      // Validate required fields
-      if (!item.name || typeof item.name !== "string") {
-        throw new Error(
-          `Item ${index + 1}: name is required and must be a string`
-        );
-      }
-
-      if (!item.category || !validCategories.includes(item.category)) {
-        throw new Error(
-          `Item ${index + 1}: category must be one of: ${validCategories.join(
-            ", "
-          )}`
-        );
-      }
-
-      if (!item.expiryPeriod || typeof item.expiryPeriod !== "number") {
-        throw new Error(
-          `Item ${index + 1}: expiryPeriod is required and must be a number`
-        );
-      }
-
-      // Validate expiryPeriod is a positive integer
-      if (!Number.isInteger(item.expiryPeriod) || item.expiryPeriod <= 0) {
-        throw new Error(
-          `Item ${index + 1}: expiryPeriod must be a positive integer`
-        );
-      }
-
-      // Validate expiryPeriod is reasonable (max 365 days)
-      if (item.expiryPeriod > 365) {
-        throw new Error(
-          `Item ${index + 1}: expiryPeriod cannot be more than 365 days`
-        );
-      }
-
-      return {
-        name: item.name.trim(),
-        category: item.category,
-        expiryPeriod: item.expiryPeriod,
-      };
+      return ItemValidator.validateAndProcessItem(item, {
+        throwOnError: true,
+        itemIndex: index
+      });
     });
 
     return validatedItems;

@@ -10,6 +10,7 @@ import {
   isDateWithinDays,
   getDaysUntilExpiry,
 } from "../utils/date.util.js";
+import { ItemValidator } from "../utils/validation.util.js";
 import { config } from "../config/index.js";
 
 class ItemService {
@@ -21,32 +22,7 @@ class ItemService {
    * Validate item data
    */
   validateItem(item) {
-    const errors = [];
-
-    // Check required fields
-    if (!item.name || typeof item.name !== "string") {
-      errors.push("Name is required and must be a string");
-    }
-
-    if (!item.expiryPeriod || typeof item.expiryPeriod !== "number") {
-      errors.push("Expiry period is required and must be a number");
-    }
-
-    // Check expiryPeriod is a positive integer
-    if (item.expiryPeriod && (!Number.isInteger(item.expiryPeriod) || item.expiryPeriod <= 0)) {
-      errors.push("Expiry period must be a positive integer");
-    }
-
-    // Check category if provided
-    const validCategories = config.business.supportedCategories;
-    if (item.category && !validCategories.includes(item.category)) {
-      errors.push(`Category must be one of: ${validCategories.join(", ")}`);
-    }
-
-    return {
-      isValid: errors.length === 0,
-      errors,
-    };
+    return ItemValidator.validateItem(item);
   }
 
   /**
@@ -61,9 +37,12 @@ class ItemService {
     expiryDate.setDate(expiryDate.getDate() + data.expiryPeriod);
     const expiryDateString = expiryDate.toISOString().split("T")[0];
 
+    // Capitalize the first letter of each word in the name
+    const capitalizedName = ItemValidator.capitalizeName(data.name);
+
     return {
       id: generateId(),
-      name: data.name,
+      name: capitalizedName,
       expiryPeriod: data.expiryPeriod,
       expiryDate: expiryDateString, // Calculated from addedDate + expiryPeriod
       addedDate: addedDate,
