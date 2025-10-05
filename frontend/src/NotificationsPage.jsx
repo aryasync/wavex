@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import DarkThemeLayout from './components/DarkThemeLayout';
 import FuturisticCard from './components/FuturisticCard';
 import { useItems } from './hooks/useItems';
 
@@ -20,7 +18,7 @@ const NotificationsPage = () => {
   };
 
   return (
-    <DarkThemeLayout title="NOTIFICATIONS">
+    <div>
       {/* Main Notifications Card */}
       <FuturisticCard height="h-auto" gradient="from-teal-600 to-blue-500">
         <div className="relative">
@@ -76,7 +74,7 @@ const NotificationsPage = () => {
           </div>
         </div>
       </FuturisticCard>
-    </DarkThemeLayout>
+    </div>
   );
 };
 

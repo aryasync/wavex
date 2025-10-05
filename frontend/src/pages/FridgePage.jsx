@@ -1,11 +1,8 @@
 import { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import DarkThemeLayout from "../components/DarkThemeLayout";
 import FuturisticCard from "../components/FuturisticCard";
 import FuturisticButton from "../components/FuturisticButton";
 import FuturisticTable from "../components/FuturisticTable";
 import HorizontalBarChart from "../components/HorizontalBarChart";
-import CameraModal from "../components/CameraModal";
 import { useItems } from "../contexts/ItemsContext";
 
 /**
@@ -14,17 +11,7 @@ import { useItems } from "../contexts/ItemsContext";
  */
 function FridgePage() {
   const { items, loading, error, refetchItems } = useItems();
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const navigate = useNavigate();
-
-  /**
-   * Handle image capture from camera
-   */
-  const handleImageCapture = (imageData) => {
-    setIsCameraOpen(false);
-    navigate('/image-confirmation', { state: { imageData } });
-  };
 
   /**
    * Calculate category counts from actual items data
@@ -86,7 +73,7 @@ function FridgePage() {
   };
 
   return (
-    <DarkThemeLayout title="WaveX" onCameraClick={() => setIsCameraOpen(true)}>
+    <div>
       {/* Pie Chart Section */}
       <FuturisticCard height="h-64">
         <div className="text-center mb-4 -mt-4">
@@ -135,14 +122,7 @@ function FridgePage() {
           />
         )}
       </div>
-
-      {/* Camera Modal */}
-      <CameraModal 
-        isOpen={isCameraOpen} 
-        onClose={() => setIsCameraOpen(false)}
-        onCapture={handleImageCapture}
-      />
-    </DarkThemeLayout>
+    </div>
   );
 }
 

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import DarkThemeLayout from './components/DarkThemeLayout';
 import FuturisticCard from './components/FuturisticCard';
 import FuturisticButton from './components/FuturisticButton';
 import { useItems } from './hooks/useItems';
@@ -55,7 +54,7 @@ const ManualInputPage = () => {
   };
 
   return (
-    <DarkThemeLayout title="MANUALLY INPUT ITEM">
+    <div>
       {/* Header */}
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold text-white font-['Kodchasan'] mb-2">
@@ -177,7 +176,7 @@ const ManualInputPage = () => {
           </p>
         </div>
       )}
-    </DarkThemeLayout>
+    </div>
   );
 };
 
