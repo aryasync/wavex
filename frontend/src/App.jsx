@@ -3,6 +3,7 @@ import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import CategoryPage from "./CategoryPage";
 import ImageConfirmationPage from "./ImageConfirmationPage";
 import CalendarPage from "./CalendarPage";
+import NotificationsPage from "./NotificationsPage";
 import PageContainer from "./components/PageContainer";
 import Header from "./components/Header";
 import Button from "./components/Button";
@@ -113,6 +114,7 @@ function App() {
     <Routes>
       <Route path="/" element={<FridgePage />} />
       <Route path="/calendar" element={<CalendarPage />} />
+      <Route path="/notifications" element={<NotificationsPage />} />
       <Route path="/image-confirmation" element={<ImageConfirmationPage />} />
       <Route path="/category/fruits" element={<CategoryPage categoryName="Fruits" categoryColor="#3B82F6" categoryIcon="🍎" />} />
       <Route path="/category/vegetables" element={<CategoryPage categoryName="Vegetables" categoryColor="#10B981" categoryIcon="🥕" />} />
