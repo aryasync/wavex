@@ -147,6 +147,20 @@ class ItemController {
   async deleteItem(req, res) {
     try {
       const { id } = req.params;
+      const { deleteAll } = req.query;
+
+      // Check if deleteAll parameter is provided (only accept boolean true)
+      if (deleteAll === true) {
+        const result = await this.itemService.deleteAllItems();
+        return res.json({
+          success: true,
+          message: `Successfully deleted ${result.deletedCount} items`,
+          deletedCount: result.deletedCount,
+          items: result.items,
+        });
+      }
+
+      // Regular single item deletion
       const deletedItem = await this.itemService.deleteItem(id);
       res.json({
         success: true,

@@ -217,6 +217,22 @@ class ItemService {
 
     return item;
   }
+
+  /**
+   * Delete all items
+   */
+  async deleteAllItems() {
+    const items = readJsonFile(this.dataFile);
+    const deletedCount = items.length;
+
+    // Save empty array to file
+    const success = writeJsonFile(this.dataFile, []);
+    if (!success) {
+      throw new Error("Failed to delete all items");
+    }
+
+    return { deletedCount, items };
+  }
 }
 
 export default ItemService;
