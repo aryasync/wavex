@@ -5,7 +5,7 @@ import ItemsTable from "./components/ItemsTable";
 import { useItems } from "./hooks/useItems";
 
 function CalendarPage() {
-  const { items } = useItems();
+  const { items, removeItem } = useItems();
 
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -164,6 +164,14 @@ function CalendarPage() {
     return items.filter((item) => item.expiryDate === dateString);
   };
 
+  const handleDeleteItem = async (item) => {
+    try {
+      await removeItem(item.id);
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
+  };
+
   return (
     <div>
       {/* Calendar Box */}
@@ -249,6 +257,7 @@ function CalendarPage() {
             items={getFoodForDate(selectedDate)}
             columns={[{ key: "product" }, { key: "daysToExpire" }]}
             emptyMessage="No items expiring on this date"
+            onDeleteItem={handleDeleteItem}
           />
         </SectionCard>
       )}

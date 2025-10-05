@@ -11,7 +11,7 @@ import { useCategories } from "./hooks/useCategories";
  * Main page displaying inventory overview and items list
  */
 function Home() {
-  const { items, loading, error, refetchItems } = useItems();
+  const { items, loading, error, refetchItems, removeItem } = useItems();
   const {
     categories,
     loading: categoriesLoading,
@@ -72,6 +72,17 @@ function Home() {
     });
   };
 
+  /**
+   * Handle item deletion
+   */
+  const handleDeleteItem = async (item) => {
+    try {
+      await removeItem(item.id);
+    } catch (error) {
+      console.error("Error deleting item:", error);
+    }
+  };
+
   return (
     <div>
       {/* Ring Pie Chart Section */}
@@ -115,6 +126,7 @@ function Home() {
                     .toLowerCase()}`
                 : "No items in your fridge yet"
             }
+            onDeleteItem={handleDeleteItem}
           />
         )}
       </SectionCard>

@@ -1,4 +1,5 @@
 import { calculateDaysUntilExpiry } from "../utils/item.util";
+import { useState } from "react";
 
 const ItemsTable = ({ 
   headers = [], 
@@ -6,8 +7,35 @@ const ItemsTable = ({
   items = [],
   columns = [],
   emptyMessage = "No data available",
-  className = "" 
+  className = "",
+  onDeleteItem = null
 }) => {
+  const [deletingItems, setDeletingItems] = useState(new Set());
+
+  const handleDeleteItem = async (item) => {
+    if (!onDeleteItem) return;
+    
+    // Add item to deleting set
+    setDeletingItems(prev => new Set([...prev, item.id]));
+    
+    try {
+      await onDeleteItem(item);
+      // Remove from deleting set after successful deletion
+      setDeletingItems(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(item.id);
+        return newSet;
+      });
+    } catch (error) {
+      console.error("Error deleting item:", error);
+      // Remove from deleting set on error
+      setDeletingItems(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(item.id);
+        return newSet;
+      });
+    }
+  };
 
   // Get background color based on days to expire
   const getExpiryBackgroundColor = (days) => {
@@ -83,11 +111,17 @@ const ItemsTable = ({
           const item = items[index];
           const days = calculateDaysUntilExpiry(item.expiryDate);
           const backgroundClass = getExpiryBackgroundColor(days);
+          const isDeleting = deletingItems.has(item.id);
           
           return (
             <div 
-              key={index} 
-              className={`grid grid-cols-2 gap-4 py-4 px-4 rounded-lg transition-all duration-200 bg-gradient-to-r ${backgroundClass} hover:opacity-80`}
+              key={item.id || index} 
+              className={`
+                relative group grid grid-cols-2 gap-4 py-4 px-4 rounded-lg transition-all duration-300 
+                bg-gradient-to-r ${backgroundClass} 
+                hover:bg-gradient-to-r hover:from-red-900/30 hover:to-red-800/20 hover:opacity-80
+                ${isDeleting ? 'opacity-0 scale-95 transform -translate-y-2' : 'opacity-100 scale-100 transform translate-y-0'}
+              `}
             >
               <div className="flex items-center">
                 {row[0].content}
@@ -95,6 +129,35 @@ const ItemsTable = ({
               <div className="flex items-center justify-end">
                 {row[1].content}
               </div>
+              
+              {/* Delete button - only show on hover and if onDeleteItem is provided */}
+              {onDeleteItem && (
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteItem(item);
+                    }}
+                    className="bg-red-500/80 hover:bg-red-500 text-white rounded-full px-3 py-2 transition-colors duration-200 shadow-lg pointer-events-auto flex items-center space-x-1"
+                    disabled={isDeleting}
+                  >
+                    <svg 
+                      className="w-4 h-4" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        strokeWidth={2} 
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" 
+                      />
+                    </svg>
+                    <span className="text-sm font-medium">Delete</span>
+                  </button>
+                </div>
+              )}
             </div>
           );
         })}
