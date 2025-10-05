@@ -7,24 +7,26 @@ import Header from "./components/Header";
 import Button from "./components/Button";
 import ItemList from "./components/ItemList";
 import PieChart from "./components/PieChart";
+import CameraModal from "./components/CameraModal";
 
 function FridgePage() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   const fetchItems = async () => {
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch("http://localhost:3001/api/items");
+    const res = await fetch("http://localhost:3001/api/items");
       
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
       
-      const data = await res.json();
-      setItems(data);
+    const data = await res.json();
+    setItems(data);
     } catch (err) {
       console.error("Error fetching items:", err);
       setError(err.message);
@@ -73,6 +75,9 @@ function FridgePage() {
         {!loading && !error && (
           <ItemList items={items} />
         )}
+        
+        {/* Extending border that grows with content - longer */}
+        <div className="border-t border-gray-200 h-32"></div>
       </div>
 
       {/* Bottom navigation bar with divider */}
@@ -83,8 +88,10 @@ function FridgePage() {
             </Button>
           </div>
           <div className="flex-1 flex justify-center">
-            <Button variant="icon" className="rounded-xl w-12 h-12 flex items-center justify-center" icon="📷">
-            </Button>
+            <button onClick={() => setIsCameraOpen(true)}>
+              <Button variant="icon" className="rounded-xl w-12 h-12 flex items-center justify-center" icon="📷">
+              </Button>
+            </button>
           </div>
           <div className="flex-1 flex justify-center">
             <Button variant="icon" className="rounded-xl w-12 h-12 flex items-center justify-center" icon="📅">
@@ -96,6 +103,12 @@ function FridgePage() {
           </div>
         </div>
       </div>
+
+      {/* Camera Modal */}
+      <CameraModal 
+        isOpen={isCameraOpen} 
+        onClose={() => setIsCameraOpen(false)} 
+      />
     </PageContainer>
   );
 }

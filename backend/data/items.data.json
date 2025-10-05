@@ -1,1 +1,50 @@
-[]
+[
+  {
+    "id": "295672013bb2ee4968df7310dc17b3b9",
+    "name": "Apples",
+    "expiryDate": "2025-10-07",
+    "addedDate": "2025-10-04",
+    "category": "fruits",
+    "quantity": "1"
+  },
+  {
+    "id": "1703123456789",
+    "name": "Milk",
+    "expiryDate": "2025-01-15",
+    "addedDate": "2025-01-10",
+    "category": "dairy",
+    "quantity": "1"
+  },
+  {
+    "id": "1703123456790",
+    "name": "Bread",
+    "expiryDate": "2025-01-12",
+    "addedDate": "2025-01-10",
+    "category": "other",
+    "quantity": "1"
+  },
+  {
+    "id": "1c1a8b6dd54282c182c09a9552bfb3bf",
+    "name": "Carrots",
+    "expiryDate": "2025-01-20",
+    "addedDate": "2025-10-04",
+    "category": "fruits",
+    "quantity": "1"
+  },
+  {
+    "id": "54a07b657b86e7679423450d58fadd2a",
+    "name": "Lays",
+    "expiryDate": "2025-01-20",
+    "addedDate": "2025-10-04",
+    "category": "fruits",
+    "quantity": "1"
+  },
+  {
+    "id": "429c14aa78f6ae2d4d834237e0376304",
+    "name": "Steak",
+    "expiryDate": "2025-01-20",
+    "addedDate": "2025-10-04",
+    "category": "other",
+    "quantity": "1"
+  }
+]
