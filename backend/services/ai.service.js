@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import sharp from "sharp";
+// import sharp from "sharp"; // Temporarily disabled for deployment
 import { config } from "../config/index.js";
 import { ItemValidator } from "../utils/validation.util.js";
 import dotenv from "dotenv";
@@ -24,16 +24,19 @@ class AIService {
    */
   async processImage(imageBuffer) {
     try {
-      // Resize image to optimal size for AI analysis (max 1024x1024)
-      const processedBuffer = await sharp(imageBuffer)
-        .resize(1024, 1024, {
-          fit: "inside",
-          withoutEnlargement: true,
-        })
-        .jpeg({ quality: 85 })
-        .toBuffer();
-
-      return processedBuffer;
+      // Temporarily disabled Sharp for deployment - using original image
+      // TODO: Re-enable Sharp after deployment
+      return imageBuffer;
+      
+      // Original Sharp code (commented out):
+      // const processedBuffer = await sharp(imageBuffer)
+      //   .resize(1024, 1024, {
+      //     fit: "inside",
+      //     withoutEnlargement: true,
+      //   })
+      //   .jpeg({ quality: 85 })
+      //   .toBuffer();
+      // return processedBuffer;
     } catch (error) {
       throw new Error(`Image processing failed: ${error.message}`);
     }
