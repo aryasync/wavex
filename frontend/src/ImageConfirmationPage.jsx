@@ -11,7 +11,8 @@ function ImageConfirmationPage() {
   const handleConfirm = () => {
     // TODO: Process the confirmed image (save to backend, etc.)
     console.log("Image confirmed:", imageData);
-    navigate("/");
+    // Navigate to calendar to pick expiration date
+    navigate("/calendar", { state: { imageData, fromConfirmation: true } });
   };
 
   const handleReject = () => {

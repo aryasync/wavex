@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import DarkThemeLayout from "./components/DarkThemeLayout";
 import FuturisticCard from "./components/FuturisticCard";
 import FuturisticButton from "./components/FuturisticButton";
@@ -8,6 +8,9 @@ import CameraModal from "./components/CameraModal";
 
 function CalendarPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { imageData, fromConfirmation } = location.state || {};
+  
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
@@ -87,6 +90,35 @@ function CalendarPage() {
     setSelectedDate(clickedDate);
   };
 
+  const handleConfirmExpiration = () => {
+    if (selectedDate && fromConfirmation) {
+      // TODO: Save the item with the selected expiration date
+      console.log("Item saved with expiration date:", selectedDate);
+      console.log("Image data:", imageData);
+      
+      // Navigate back to home page
+      navigate("/");
+    } else if (selectedDate) {
+      // Regular calendar usage
+      console.log("Selected date:", selectedDate);
+    }
+  };
+
+  const handleCancelExpiration = () => {
+    if (fromConfirmation) {
+      // Navigate back to image confirmation
+      navigate("/image-confirmation", { state: { imageData } });
+    } else {
+      // Navigate to home
+      navigate("/");
+    }
+  };
+
+  const handleDenyAndManual = () => {
+    // Navigate to manual input page
+    navigate("/manual-input");
+  };
+
   const isToday = (day) => {
     const today = new Date();
     return (
@@ -157,7 +189,7 @@ function CalendarPage() {
   };
 
   return (
-    <DarkThemeLayout title="CALENDAR" onCameraClick={() => setIsCameraOpen(true)}>
+    <DarkThemeLayout title="PICK EXPIRATION DATE" onCameraClick={() => setIsCameraOpen(true)}>
       {/* Calendar Box */}
       <FuturisticCard height="h-80">
         {/* Month Navigation */}
@@ -200,25 +232,52 @@ function CalendarPage() {
         </div>
       </FuturisticCard>
 
-      {/* Items Section */}
-      <div>
-        <h3 className="text-xl font-bold font-['Orbitron'] mb-4">Items</h3>
-        
-        <FuturisticTable
-          headers={["Product", "Date Bought", "Expiration Date"]}
-          data={selectedDate ? getFoodForDate(selectedDate).map((food, index) => [
-            { content: (
-              <div className="flex items-center space-x-2">
-                <span className="text-lg">{food.icon}</span>
-                <span>{food.name}</span>
-              </div>
-            )},
-            { content: new Date().toLocaleDateString(), className: "text-white/70" },
-            { content: selectedDate.toLocaleDateString(), className: "text-red-400" }
-          ]) : []}
-          emptyMessage={selectedDate ? "No items expiring on this date" : "Select a date to see expiring items"}
-        />
-      </div>
+      {/* Confirm and Deny Buttons (only show when coming from confirmation) */}
+      {fromConfirmation && (
+        <div className="flex justify-center mt-16">
+          <FuturisticButton 
+            variant="primary" 
+            className="px-8 py-3 text-lg font-semibold -mr-1"
+            onClick={handleConfirmExpiration}
+            disabled={!selectedDate}
+          >
+            CONFIRM
+          </FuturisticButton>
+          
+          <FuturisticButton 
+            variant="danger" 
+            className="px-8 py-3 text-lg font-semibold -ml-1"
+            onClick={handleDenyAndManual}
+          >
+            DENY
+          </FuturisticButton>
+        </div>
+      )}
+
+      {/* Cancel Button (only show when coming from confirmation) */}
+      {fromConfirmation && (
+        <div className="flex justify-center mt-2">
+          <FuturisticButton 
+            variant="secondary" 
+            className="px-6 py-2 text-sm"
+            onClick={handleCancelExpiration}
+          >
+            CANCEL
+          </FuturisticButton>
+        </div>
+      )}
+
+      {/* Prompt Message */}
+      {fromConfirmation && (
+        <div className="text-center mt-2">
+          <p className="text-white/60 text-sm">
+            {selectedDate 
+              ? `Selected expiration date: ${selectedDate.toLocaleDateString()}`
+              : "Please select an expiration date for your item"
+            }
+          </p>
+        </div>
+      )}
 
       {/* Camera Modal */}
       <CameraModal 

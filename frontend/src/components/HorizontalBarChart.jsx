@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const HorizontalBarChart = ({ data = [], title = "Fridge Contents" }) => {
+const HorizontalBarChart = ({ data = [], title = "Fridge Contents", onCategoryClick, selectedCategory }) => {
   const [hoveredSegment, setHoveredSegment] = useState(null);
   const navigate = useNavigate();
 
@@ -45,10 +45,10 @@ const HorizontalBarChart = ({ data = [], title = "Fridge Contents" }) => {
   }, []);
 
   const handleSegmentClick = useCallback((segment) => {
-    if (segment.route) {
-      navigate(segment.route);
+    if (onCategoryClick) {
+      onCategoryClick(segment.label);
     }
-  }, [navigate]);
+  }, [onCategoryClick]);
 
   return (
     <div className="bg-transparent rounded-xl p-6">
@@ -101,7 +101,8 @@ const HorizontalBarChart = ({ data = [], title = "Fridge Contents" }) => {
           <div
             key={segment.index}
             className={`flex items-center space-x-2 px-3 py-1 rounded transition-all duration-200 cursor-pointer ${
-              hoveredSegment === segment.index ? 'bg-white/20' : 'bg-white/10'
+              hoveredSegment === segment.index ? 'bg-white/20' : 
+              selectedCategory === segment.label ? 'bg-white/30' : 'bg-white/10'
             }`}
             onMouseEnter={() => handleSegmentHover(segment.index)}
             onMouseLeave={handleSegmentLeave}
