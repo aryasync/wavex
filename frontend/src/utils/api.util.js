@@ -111,6 +111,16 @@ export const itemsApi = {
     }
     
     return apiResponse.json();
+  },
+
+  /**
+   * Create a new notification
+   */
+  createNotification: async (notificationData) => {
+    return makeApiRequest('/notifications', {
+      method: 'POST',
+      body: JSON.stringify(notificationData),
+    });
   }
 };
 

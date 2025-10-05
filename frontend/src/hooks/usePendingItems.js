@@ -68,6 +68,21 @@ export const usePendingItems = (aiAnalysisResult, items) => {
       }
       
       console.log(`Successfully confirmed ${itemsToConfirm.length} items and deleted ${itemsToDelete.length} pending items`);
+      
+      // Create notification for added items
+      if (itemsToConfirm.length > 0) {
+        try {
+          await itemsApi.createNotification({
+            type: 'added_items',
+            message: `Added ${itemsToConfirm.length} item${itemsToConfirm.length !== 1 ? 's' : ''} via AI scan`,
+            itemId: null
+          });
+        } catch (error) {
+          console.error('Error creating notification:', error);
+          // Don't fail the whole operation if notification creation fails
+        }
+      }
+      
       return { success: true, confirmed: itemsToConfirm.length, deleted: itemsToDelete.length };
     } catch (error) {
       console.error("Error confirming selected items:", error);

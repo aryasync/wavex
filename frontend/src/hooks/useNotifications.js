@@ -2,41 +2,138 @@ import { useState, useEffect } from 'react';
 
 /**
  * Custom hook for managing notifications
- * Checks for unread notifications from backend
  */
 export const useNotifications = () => {
-  const [hasNotifications, setHasNotifications] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [schedulerStatus, setSchedulerStatus] = useState(null);
 
-  const checkNotifications = async () => {
+  // Fetch notifications and scheduler status
+  const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3001/api/notifications?isRead=false');
-      if (response.ok) {
-        const data = await response.json();
-        setHasNotifications(data.count > 0);
-        setError(null);
-      } else {
+      setError(null);
+
+      // Fetch notifications
+      const notificationsResponse = await fetch('http://localhost:3001/api/notifications');
+      if (!notificationsResponse.ok) {
         throw new Error('Failed to fetch notifications');
       }
+      const notificationsData = await notificationsResponse.json();
+      setNotifications(notificationsData.data || []);
+
+      // Fetch scheduler status
+      const schedulerResponse = await fetch('http://localhost:3001/api/notifications/scheduler/status');
+      if (schedulerResponse.ok) {
+        const schedulerData = await schedulerResponse.json();
+        setSchedulerStatus(schedulerData.data);
+      }
     } catch (err) {
-      console.error('Error checking notifications:', err);
+      console.error('Error fetching data:', err);
       setError(err.message);
-      setHasNotifications(false);
     } finally {
       setLoading(false);
     }
   };
 
+  // Initial fetch
   useEffect(() => {
-    checkNotifications();
+    fetchData();
   }, []);
 
+  // Mark notification as read
+  const markAsRead = async (notificationId) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/notifications/${notificationId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isRead: true }),
+      });
+
+      if (response.ok) {
+        setNotifications(prev =>
+          prev.map(notification =>
+            notification.id === notificationId
+              ? { ...notification, isRead: true }
+              : notification
+          )
+        );
+      }
+    } catch (err) {
+      console.error('Error marking notification as read:', err);
+    }
+  };
+
+  // Delete notification
+  const deleteNotification = async (notificationId) => {
+    try {
+      const response = await fetch('http://localhost:3001/api/notifications', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: [notificationId] }),
+      });
+
+      if (response.ok) {
+        setNotifications(prev =>
+          prev.filter(notification => notification.id !== notificationId)
+        );
+      }
+    } catch (err) {
+      console.error('Error deleting notification:', err);
+    }
+  };
+
+  // Mark all notifications as read
+  const markAllAsRead = async () => {
+    try {
+      const unreadNotifications = notifications.filter(n => !n.isRead);
+      if (unreadNotifications.length === 0) return;
+
+      // Update all unread notifications
+      for (const notification of unreadNotifications) {
+        await markAsRead(notification.id);
+      }
+      
+      return { success: true, count: unreadNotifications.length };
+    } catch (err) {
+      console.error('Error marking all notifications as read:', err);
+      return { success: false, error: err.message };
+    }
+  };
+
+  // Trigger scheduler
+  const triggerScheduler = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/notifications/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Refresh notifications after trigger
+        await fetchData();
+        return { success: true, data };
+      } else {
+        throw new Error('Failed to trigger scheduler');
+      }
+    } catch (err) {
+      console.error('Error triggering scheduler:', err);
+      return { success: false, error: err.message };
+    }
+  };
+
   return {
-    hasNotifications,
+    notifications,
     loading,
     error,
-    refetch: checkNotifications
+    schedulerStatus,
+    hasNotifications: notifications.some(n => !n.isRead),
+    markAsRead,
+    deleteNotification,
+    markAllAsRead,
+    triggerScheduler,
+    refreshNotifications: fetchData,
   };
 };
