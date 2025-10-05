@@ -1,25 +1,31 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AboutModal from "./AboutModal";
 import CameraModal from "./CameraModal";
-import { useItems } from "../hooks/useItems";
 
 const DarkThemeLayout = ({ children, title, currentPage, onCameraClick, onImageCapture }) => {
   const navigate = useNavigate();
   const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const { items } = useItems();
+  const [hasNotifications, setHasNotifications] = useState(false);
 
-  // Check for items expiring within 3 days
-  const expiringSoon = items.filter(item => {
-    const expiryDate = new Date(item.expiryDate);
-    const today = new Date();
-    const diffTime = expiryDate - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays <= 3 && diffDays >= 0;
-  });
+  // Check for unread notifications from backend
+  useEffect(() => {
+    const checkNotifications = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/notifications?isRead=false');
+        if (response.ok) {
+          const data = await response.json();
+          setHasNotifications(data.count > 0);
+        }
+      } catch (error) {
+        console.error('Error checking notifications:', error);
+        setHasNotifications(false);
+      }
+    };
 
-  const hasNotifications = expiringSoon.length > 0;
+    checkNotifications();
+  }, []);
 
   const handleCameraClick = () => {
     if (onCameraClick) {

@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "id": "notif-123",
+    "type": "item_expiry_warning",
+    "message": "Milk expires in 2 days",
+    "createdAt": 1717564800,
+    "isRead": false,
+    "itemId": "item-456"
+  },
+  {
+    "id": "notif-456",
+    "type": "item_expired",
+    "message": "Milk has expired",
+    "createdAt": 1717564800,
+    "isRead": false,
+    "itemId": "item-456"
+  },
+  {
+    "id": "notif-789",
+    "type": "added_items",
+    "message": "Added 3 items",
+    "createdAt": 1717564800,
+    "isRead": false,
+    "itemId": null
+  }
+]
