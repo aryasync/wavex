@@ -36,7 +36,7 @@ const CategoryPage = ({ categoryName, categoryColor, categoryIcon }) => {
             {items.map((item, index) => (
               <div key={index} className="bg-white p-4 rounded-lg border border-gray-200">
                 <div className="font-medium">{item.name}</div>
-                <div className="text-sm text-gray-500">{item.expiry}</div>
+                <div className="text-sm text-gray-500">{item.expiryDate}</div>
               </div>
             ))}
           </div>

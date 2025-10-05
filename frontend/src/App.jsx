@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import AboutPage from "./AboutPage";
 import CategoryPage from "./CategoryPage";
@@ -10,12 +10,33 @@ import PieChart from "./components/PieChart";
 
 function FridgePage() {
   const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchItems = async () => {
-    const res = await fetch("http://localhost:3001/api/items");
-    const data = await res.json();
-    setItems(data);
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await fetch("http://localhost:3001/api/items");
+      
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      
+      const data = await res.json();
+      setItems(data);
+    } catch (err) {
+      console.error("Error fetching items:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  // Fetch items when component mounts
+  useEffect(() => {
+    fetchItems();
+  }, []);
   return (
     <PageContainer>
       <Header title="🧊 Tsunami Fridge Tracker" />
@@ -34,7 +55,24 @@ function FridgePage() {
       </div>
 
       <div className="flex-1 overflow-y-auto pb-20">
-        <ItemList items={items} />
+        {loading && (
+          <div className="flex justify-center items-center py-8">
+            <div className="text-gray-500">Loading items...</div>
+          </div>
+        )}
+        
+        {error && (
+          <div className="flex flex-col items-center py-8">
+            <div className="text-red-500 mb-4">Error: {error}</div>
+            <Button variant="primary" onClick={fetchItems}>
+              Retry
+            </Button>
+          </div>
+        )}
+        
+        {!loading && !error && (
+          <ItemList items={items} />
+        )}
       </div>
 
       {/* Bottom navigation bar with divider */}
