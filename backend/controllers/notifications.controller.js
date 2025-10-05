@@ -1,7 +1,9 @@
 import { NotificationService } from "../services/notifications.service.js";
+import { NotificationSchedulerService } from "../services/notification-scheduler.service.js";
 import { config } from "../config/index.js";
 
 const notificationService = new NotificationService();
+const schedulerService = new NotificationSchedulerService();
 
 /**
  * Get notifications with optional filters and ID support
@@ -188,6 +190,49 @@ export const updateNotification = async (req, res) => {
         message: "Failed to update notification"
       });
     }
+  }
+};
+
+/**
+ * Manually trigger notification check (for demos)
+ * POST /api/notifications/check
+ */
+export const triggerNotificationCheck = async (req, res) => {
+  try {
+    const results = await schedulerService.triggerNotificationCheck();
+
+    res.json({
+      success: true,
+      data: results,
+      message: `Notification check completed: ${results.expiringWarnings} warnings, ${results.expiredItems} expired items`
+    });
+  } catch (error) {
+    console.error("Error triggering notification check:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to trigger notification check"
+    });
+  }
+};
+
+/**
+ * Get scheduler status
+ * GET /api/notifications/scheduler/status
+ */
+export const getSchedulerStatus = async (req, res) => {
+  try {
+    const status = schedulerService.getStatus();
+
+    res.json({
+      success: true,
+      data: status
+    });
+  } catch (error) {
+    console.error("Error getting scheduler status:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to get scheduler status"
+    });
   }
 };
 

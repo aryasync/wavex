@@ -175,6 +175,15 @@ Content-Type: application/json
 GET /api/notifications/stats
 ```
 
+### Check Notifications (Manual Trigger)
+```bash
+# Manually trigger notification check (for demos)
+POST /api/notifications/check
+
+# Get scheduler status
+GET /api/notifications/scheduler/status
+```
+
 ## Valid Values
 
 - **Categories**: `dairy`, `meat`, `produce`, `pantry`, `other`
