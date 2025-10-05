@@ -25,7 +25,23 @@ const RingPieChart = ({ data = [], onCategoryClick, selectedCategories = [] }) =
 
   // Calculate segment data with percentages and angles
   const segments = useMemo(() => {
-    if (total === 0) return [];
+    if (total === 0) {
+      // If no items, show all categories as equal segments
+      const anglePerSegment = 360 / chartData.length;
+      return chartData.map((item, index) => {
+        const startAngle = index * anglePerSegment;
+        const endAngle = (index + 1) * anglePerSegment;
+        
+        return {
+          ...item,
+          index,
+          percentage: 100 / chartData.length,
+          angle: anglePerSegment,
+          startAngle,
+          endAngle
+        };
+      });
+    }
     
     let currentAngle = 0;
     return chartData.map((item, index) => {
@@ -89,19 +105,20 @@ const RingPieChart = ({ data = [], onCategoryClick, selectedCategories = [] }) =
 
   const centerX = 100;
   const centerY = 100;
-  const innerRadius = 60;  // Larger inner radius for slimmer ring
+  const innerRadius = 70;  // Larger inner radius for slimmer ring
   const outerRadius = 90;   // Slightly larger outer radius
 
   return (
     <div>
       {/* Ring Pie Chart with Legend */}
-      <div className="flex items-center justify-center gap-6">
+      <div className="flex items-center justify-center">
         {/* Chart */}
         <div className="relative">
           <svg width="240" height="240" viewBox="0 0 200 200" className="transform -rotate-90">
             {segments.length > 0 ? segments.map((segment) => {
               const isSelected = selectedCategories.includes(segment.label);
               const isHovered = hoveredSegment === segment.index;
+              const hasItems = segment.value > 0;
               
               // Only highlight if this specific segment is selected
               const shouldHighlight = isSelected;
@@ -110,19 +127,24 @@ const RingPieChart = ({ data = [], onCategoryClick, selectedCategories = [] }) =
                 <path
                   key={segment.index}
                   d={createArcPath(segment.startAngle, segment.endAngle, innerRadius, outerRadius)}
-                  fill={segment.color}
+                  fill={hasItems ? segment.color : 'rgba(255,255,255,0.1)'}
+                  stroke={hasItems ? 'none' : 'rgba(255,255,255,0.3)'}
+                  strokeWidth={hasItems ? '0' : '1'}
+                  strokeDasharray={hasItems ? 'none' : '3,3'}
                   className={`transition-all duration-200 cursor-pointer ${
                     shouldHighlight 
                       ? 'opacity-100' 
                       : isHovered 
                         ? 'opacity-80' 
-                        : 'opacity-60'
+                        : hasItems
+                          ? 'opacity-60'
+                          : 'opacity-30'
                   }`}
                   onMouseEnter={() => handleSegmentHover(segment.index)}
                   onMouseLeave={handleSegmentLeave}
                   onClick={() => handleSegmentClick(segment)}
                   style={{
-                    filter: shouldHighlight ? 'brightness(1.2) saturate(1.2)' : isHovered ? 'brightness(1.1)' : 'brightness(0.8)',
+                    filter: shouldHighlight ? 'brightness(1.2) saturate(1.2)' : isHovered ? 'brightness(1.1)' : hasItems ? 'brightness(0.8)' : 'brightness(0.6)',
                   }}
                 />
               );
@@ -158,6 +180,7 @@ const RingPieChart = ({ data = [], onCategoryClick, selectedCategories = [] }) =
           {segments.map((segment) => {
             const isSelected = selectedCategories.includes(segment.label);
             const isHovered = hoveredSegment === segment.index;
+            const hasItems = segment.value > 0;
             
             return (
               <div
@@ -179,12 +202,15 @@ const RingPieChart = ({ data = [], onCategoryClick, selectedCategories = [] }) =
                 <div
                   className={`w-3 h-3 rounded-full flex-shrink-0 transition-all duration-200 ${
                     isSelected ? 'ring-2 ring-white/60' : ''
-                  }`}
-                  style={{ backgroundColor: segment.color }}
+                  } ${!hasItems ? 'border border-white/30' : ''}`}
+                  style={{ 
+                    backgroundColor: hasItems ? segment.color : 'rgba(255,255,255,0.1)',
+                    backgroundImage: !hasItems ? 'repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)' : 'none'
+                  }}
                   aria-hidden="true"
                 />
                 <span className={`text-xs font-medium transition-colors duration-200 ${
-                  isSelected ? 'text-white font-semibold' : 'text-white/90'
+                  isSelected ? 'text-white font-semibold' : hasItems ? 'text-white/90' : 'text-white/60'
                 }`}>
                   {segment.label}
                 </span>

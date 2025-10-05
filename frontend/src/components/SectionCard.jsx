@@ -12,7 +12,7 @@ const SectionCard = ({
 }) => {
   return (
     <div className={`${className} mb-6`}>
-      <h3 className={titleClassName}>
+      <h3 className={`px-4 ${titleClassName}`}>
         {title}
       </h3>
       {children}

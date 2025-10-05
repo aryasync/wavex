@@ -55,8 +55,7 @@ class ItemService {
       id: generateId(),
       name: data.name,
       expiryDate: data.expiryDate,
-      addedDate: data.addedDate || now,
-      dateBought: data.dateBought || data.addedDate || now,
+      purchasedDate: data.purchasedDate || now,
       category: data.category || "other",
     };
   }

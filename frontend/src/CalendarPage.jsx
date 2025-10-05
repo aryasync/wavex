@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import DarkThemeLayout from "./components/DarkThemeLayout";
 import FuturisticCard from "./components/FuturisticCard";
 import FuturisticButton from "./components/FuturisticButton";
-import FuturisticTable from "./components/FuturisticTable";
+import ItemsTable from "./components/ItemsTable";
 import CameraModal from "./components/CameraModal";
 import { useItems } from "./hooks/useItems";
 
@@ -22,41 +22,6 @@ function CalendarPage() {
     navigate('/image-confirmation', { state: { imageData } });
   };
 
-  // Sample food expiration data
-  const foodExpirationData = {
-    "2025-01-15": [
-      { name: "Milk", category: "Dairy", icon: "🥛" },
-      { name: "Bananas", category: "Produce", icon: "🍌" },
-      { name: "Bread", category: "Other", icon: "🍞" }
-    ],
-    "2025-01-16": [
-      { name: "Yogurt", category: "Dairy", icon: "🥛" },
-      { name: "Strawberries", category: "Produce", icon: "🍓" }
-    ],
-    "2025-10-04": [
-      { name: "Chicken Breast", category: "Meat", icon: "🥩" },
-      { name: "Spinach", category: "Produce", icon: "🥬" },
-      { name: "Cheese", category: "Dairy", icon: "🧀" }
-    ],
-    "2025-10-05": [
-      { name: "Ground Beef", category: "Meat", icon: "🥩" },
-      { name: "Carrots", category: "Produce", icon: "🥕" }
-    ],
-    "2025-01-03": [
-      { name: "Salmon", category: "Meat", icon: "🐟" },
-      { name: "Apples", category: "Produce", icon: "🍎" },
-      { name: "Eggs", category: "Dairy", icon: "🥚" }
-    ],
-    "2025-01-02": [
-      { name: "Pork Chops", category: "Meat", icon: "🥩" },
-      { name: "Broccoli", category: "Produce", icon: "🥦" },
-      { name: "Butter", category: "Dairy", icon: "🧈" }
-    ],
-    "2025-01-05": [
-      { name: "Turkey", category: "Meat", icon: "🦃" },
-      { name: "Oranges", category: "Produce", icon: "🍊" }
-    ]
-  };
 
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
@@ -190,15 +155,6 @@ function CalendarPage() {
     return days;
   };
 
-  const formatSelectedDate = () => {
-    if (!selectedDate) return "No date selected";
-    return selectedDate.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
 
   const getFoodForDate = (date) => {
     if (!date) return [];
@@ -329,18 +285,13 @@ function CalendarPage() {
             Items Expiring on {selectedDate.toLocaleDateString()}
           </h3>
           
-          <FuturisticTable
-            headers={["Product", "Category", "Date Bought"]}
-            data={getFoodForDate(selectedDate).map((item) => [
-              { content: (
-                <div className="flex items-center space-x-2">
-                  <span className="text-lg">{item.icon}</span>
-                  <span>{item.name}</span>
-                </div>
-              )},
-              { content: item.category, className: "text-white/70" },
-              { content: item.purchasedDate, className: "text-white/70" }
-            ])}
+          <ItemsTable
+            headers={["Product", "Days to Expire"]}
+            items={getFoodForDate(selectedDate)}
+            columns={[
+              { key: 'product' },
+              { key: 'daysToExpire' }
+            ]}
             emptyMessage="No items expiring on this date"
           />
         </div>

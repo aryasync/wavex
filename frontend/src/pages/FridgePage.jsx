@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import FuturisticButton from "../components/FuturisticButton";
-import FuturisticTable from "../components/FuturisticTable";
+import ItemsTable from "../components/ItemsTable";
 import RingPieChart from "../components/RingPieChart";
 import SectionCard from "../components/SectionCard";
 import { useItems } from "../contexts/ItemsContext";
@@ -21,7 +21,7 @@ function FridgePage() {
   const [selectedCategories, setSelectedCategories] = useState([]);
 
   /**
-   * Calculate category counts from actual items data, sorted by count
+   * Calculate category data showing all categories, even those with 0 items
    */
   const categoryData = useMemo(() => {
     const categoryCounts = {};
@@ -32,18 +32,11 @@ function FridgePage() {
       categoryCounts[category] = (categoryCounts[category] || 0) + 1;
     });
 
-    // Only include categories that exist in the backend config
-    const categoryEntries = Object.entries(categoryCounts).filter(
-      ([category]) => categories.includes(category)
-    );
-
-    // Sort by count (highest first) and assign colors based on ranking
-    const sortedEntries = categoryEntries.sort(([, a], [, b]) => b - a);
-
-    return sortedEntries.map(([category, count], index) => ({
+    // Show ALL categories from backend config, including those with 0 items
+    return categories.map((category, index) => ({
       label: category.charAt(0).toUpperCase() + category.slice(1), // Capitalize first letter
-      value: count,
-      color: getCategoryColor(category, index), // Darkest color for highest count
+      value: categoryCounts[category.toLowerCase()] || 0, // Use 0 if no items
+      color: getCategoryColor(category, index),
     }));
   }, [items, categories, getCategoryColor]);
 
@@ -108,20 +101,13 @@ function FridgePage() {
         )}
 
         {!loading && !error && !categoriesLoading && !categoriesError && (
-          <FuturisticTable
-            headers={["Product", "Category", "Expiration"]}
-            data={filteredItems.map((item) => [
-              {
-                content: (
-                  <div className="flex items-center space-x-2">
-                    <span className="text-lg">{item.icon || "📦"}</span>
-                    <span>{item.name}</span>
-                  </div>
-                ),
-              },
-              { content: item.category, className: "text-white/70" },
-              { content: item.expiryDate, className: "text-red-400" },
-            ])}
+          <ItemsTable
+            headers={["Product", "Days to Expire"]}
+            items={filteredItems}
+            columns={[
+              { key: 'product' },
+              { key: 'daysToExpire' }
+            ]}
             emptyMessage={
               selectedCategories.length > 0
                 ? `No items found in selected categories: ${selectedCategories
