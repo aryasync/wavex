@@ -5,11 +5,13 @@ import FuturisticCard from "./components/FuturisticCard";
 import FuturisticButton from "./components/FuturisticButton";
 import FuturisticTable from "./components/FuturisticTable";
 import CameraModal from "./components/CameraModal";
+import { useItems } from "./App";
 
 function CalendarPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { imageData, fromConfirmation } = location.state || {};
+  const { items, addItem } = useItems();
   
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
@@ -92,9 +94,15 @@ function CalendarPage() {
 
   const handleConfirmExpiration = () => {
     if (selectedDate && fromConfirmation) {
-      // TODO: Save the item with the selected expiration date
-      console.log("Item saved with expiration date:", selectedDate);
-      console.log("Image data:", imageData);
+      // Add the item with the selected expiration date
+      const newItem = {
+        name: "Scanned Item", // This would come from image processing
+        category: "Other", // This would be determined from image analysis
+        expiryDate: selectedDate.toISOString().split('T')[0],
+        icon: "📦",
+        dateBought: new Date().toISOString().split('T')[0]
+      };
+      addItem(newItem);
       
       // Navigate back to home page
       navigate("/");
@@ -185,7 +193,7 @@ function CalendarPage() {
   const getFoodForDate = (date) => {
     if (!date) return [];
     const dateString = date.toISOString().split('T')[0];
-    return foodExpirationData[dateString] || [];
+    return items.filter(item => item.expiryDate === dateString);
   };
 
   return (
@@ -276,6 +284,30 @@ function CalendarPage() {
               : "Please select an expiration date for your item"
             }
           </p>
+        </div>
+      )}
+
+      {/* Items for Selected Date (only show when not from confirmation) */}
+      {!fromConfirmation && selectedDate && (
+        <div className="mt-6">
+          <h3 className="text-xl font-bold font-['Orbitron'] mb-4 text-center text-white">
+            Items Expiring on {selectedDate.toLocaleDateString()}
+          </h3>
+          
+          <FuturisticTable
+            headers={["Product", "Category", "Date Bought"]}
+            data={getFoodForDate(selectedDate).map((item) => [
+              { content: (
+                <div className="flex items-center space-x-2">
+                  <span className="text-lg">{item.icon}</span>
+                  <span>{item.name}</span>
+                </div>
+              )},
+              { content: item.category, className: "text-white/70" },
+              { content: item.dateBought, className: "text-white/70" }
+            ])}
+            emptyMessage="No items expiring on this date"
+          />
         </div>
       )}
 

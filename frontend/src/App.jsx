@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import ImageConfirmationPage from "./ImageConfirmationPage";
 import CalendarPage from "./CalendarPage";
@@ -15,18 +15,22 @@ import FuturisticCard from "./components/FuturisticCard";
 import FuturisticButton from "./components/FuturisticButton";
 import FuturisticTable from "./components/FuturisticTable";
 
-function FridgePage() {
+// Create context for shared items state
+const ItemsContext = createContext();
+
+export const useItems = () => {
+  const context = useContext(ItemsContext);
+  if (!context) {
+    throw new Error('useItems must be used within an ItemsProvider');
+  }
+  return context;
+};
+
+// Items Provider Component
+function ItemsProvider({ children }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const navigate = useNavigate();
-
-  const handleImageCapture = (imageData) => {
-    setIsCameraOpen(false);
-    navigate('/image-confirmation', { state: { imageData } });
-  };
 
   const fetchItems = async () => {
     try {
@@ -45,34 +49,98 @@ function FridgePage() {
       setError(err.message);
       // Set some default items for testing
       setItems([
-        { name: "Sample Milk", category: "Dairy", expiryDate: "2024-01-20", icon: "🥛" },
-        { name: "Sample Bread", category: "Other", expiryDate: "2024-01-18", icon: "🍞" }
+        { id: 1, name: "Sample Milk", category: "Dairy", expiryDate: "2024-01-20", icon: "🥛", dateBought: "2024-01-15" },
+        { id: 2, name: "Sample Bread", category: "Other", expiryDate: "2024-01-18", icon: "🍞", dateBought: "2024-01-14" },
+        { id: 3, name: "Sample Apples", category: "Fruits", expiryDate: "2024-01-25", icon: "🍎", dateBought: "2024-01-13" }
       ]);
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch items when component mounts
+  const addItem = (newItem) => {
+    const item = {
+      id: Date.now(), // Simple ID generation
+      ...newItem,
+      dateBought: newItem.dateBought || new Date().toISOString().split('T')[0]
+    };
+    setItems(prev => [...prev, item]);
+  };
+
+  const removeItem = (itemId) => {
+    setItems(prev => prev.filter(item => item.id !== itemId));
+  };
+
+  const updateItem = (itemId, updates) => {
+    setItems(prev => prev.map(item => 
+      item.id === itemId ? { ...item, ...updates } : item
+    ));
+  };
+
   useEffect(() => {
     fetchItems();
   }, []);
 
-  // Filter items based on selected category
-  const filteredItems = selectedCategory 
-    ? items.filter(item => item.category.toLowerCase() === selectedCategory.toLowerCase())
+  const value = {
+    items,
+    loading,
+    error,
+    addItem,
+    removeItem,
+    updateItem,
+    refetchItems: fetchItems
+  };
+
+  return (
+    <ItemsContext.Provider value={value}>
+      {children}
+    </ItemsContext.Provider>
+  );
+}
+
+function FridgePage() {
+  const { items, loading, error, refetchItems } = useItems();
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const navigate = useNavigate();
+
+  const handleImageCapture = (imageData) => {
+    setIsCameraOpen(false);
+    navigate('/image-confirmation', { state: { imageData } });
+  };
+
+  // Filter items based on selected categories
+  const filteredItems = selectedCategories.length > 0 
+    ? items.filter(item => 
+        selectedCategories.some(category => 
+          item.category.toLowerCase() === category.toLowerCase()
+        )
+      )
     : items;
 
   const handleCategoryClick = (category) => {
-    setSelectedCategory(selectedCategory === category ? null : category);
+    if (category === 'CLEAR_ALL') {
+      setSelectedCategories([]);
+      return;
+    }
+    
+    setSelectedCategories(prev => {
+      if (prev.includes(category)) {
+        // Remove category if already selected
+        return prev.filter(cat => cat !== category);
+      } else {
+        // Add category if not selected
+        return [...prev, category];
+      }
+    });
   };
   return (
-    <DarkThemeLayout title="WaveX" onCameraClick={() => setIsCameraOpen(true)}>
+    <DarkThemeLayout title="🧊 TSUNAMI FRIDGE TRACKER" onCameraClick={() => setIsCameraOpen(true)}>
       {/* Pie Chart Section */}
       <FuturisticCard height="h-64">
         <div className="text-center mb-4 -mt-4">
           <h2 className="text-xl font-semibold text-white font-['Orbitron'] mb-4">Inventory Overview</h2>
-          <HorizontalBarChart onCategoryClick={handleCategoryClick} selectedCategory={selectedCategory} />
+          <HorizontalBarChart onCategoryClick={handleCategoryClick} selectedCategories={selectedCategories} />
         </div>
       </FuturisticCard>
       
@@ -90,7 +158,7 @@ function FridgePage() {
         {error && (
           <div className="text-center py-8">
             <p className="text-red-400 mb-4">Error: {error}</p>
-            <FuturisticButton variant="primary" onClick={fetchItems}>
+            <FuturisticButton variant="primary" onClick={refetchItems}>
               Retry
             </FuturisticButton>
           </div>
@@ -109,7 +177,7 @@ function FridgePage() {
               { content: item.category, className: "text-white/70" },
               { content: item.expiryDate, className: "text-red-400" }
             ])}
-            emptyMessage={selectedCategory ? `No ${selectedCategory.toLowerCase()} items found` : "No items in your fridge yet"}
+            emptyMessage={selectedCategories.length > 0 ? `No items found in selected categories: ${selectedCategories.join(', ').toLowerCase()}` : "No items in your fridge yet"}
           />
         )}
       </div>
@@ -126,13 +194,15 @@ function FridgePage() {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<FridgePage />} />
-      <Route path="/calendar" element={<CalendarPage />} />
-      <Route path="/notifications" element={<NotificationsPage />} />
-      <Route path="/manual-input" element={<ManualInputPage />} />
-      <Route path="/image-confirmation" element={<ImageConfirmationPage />} />
-    </Routes>
+    <ItemsProvider>
+      <Routes>
+        <Route path="/" element={<FridgePage />} />
+        <Route path="/calendar" element={<CalendarPage />} />
+        <Route path="/notifications" element={<NotificationsPage />} />
+        <Route path="/manual-input" element={<ManualInputPage />} />
+        <Route path="/image-confirmation" element={<ImageConfirmationPage />} />
+      </Routes>
+    </ItemsProvider>
   );
 }
 

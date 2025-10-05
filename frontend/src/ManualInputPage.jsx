@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import DarkThemeLayout from './components/DarkThemeLayout';
 import FuturisticCard from './components/FuturisticCard';
 import FuturisticButton from './components/FuturisticButton';
+import { useItems } from './App';
 
 const ManualInputPage = () => {
   const navigate = useNavigate();
+  const { addItem } = useItems();
   const [formData, setFormData] = useState({
     name: '',
     todaysDate: new Date().toISOString().split('T')[0],
@@ -23,9 +25,29 @@ const ManualInputPage = () => {
   };
 
   const handleConfirm = () => {
-    // TODO: Save the manually input item
-    console.log("Manual item saved:", formData);
+    // Add the manually input item
+    const newItem = {
+      name: formData.name,
+      category: formData.category,
+      expiryDate: formData.expirationDate,
+      dateBought: formData.todaysDate,
+      icon: getCategoryIcon(formData.category)
+    };
+    addItem(newItem);
+    
+    // Navigate back to home page
     navigate("/");
+  };
+
+  const getCategoryIcon = (category) => {
+    const icons = {
+      'Fruits': '🍎',
+      'Vegetables': '🥕',
+      'Dairy': '🥛',
+      'Meat': '🥩',
+      'Other': '📦'
+    };
+    return icons[category] || '📦';
   };
 
   const handleCancel = () => {
