@@ -52,10 +52,10 @@ function FridgePage() {
     fetchItems();
   }, []);
   return (
-    <DarkThemeLayout title="🧊 TSUNAMI FRIDGE TRACKER" onCameraClick={() => setIsCameraOpen(true)}>
+    <DarkThemeLayout title="WaveX" onCameraClick={() => setIsCameraOpen(true)}>
       {/* Pie Chart Section */}
       <FuturisticCard height="h-64">
-        <div className="text-center mb-4">
+        <div className="text-center mb-4 -mt-4">
           <h2 className="text-xl font-semibold text-white font-['Orbitron'] mb-4">Inventory Overview</h2>
           <HorizontalBarChart />
         </div>
