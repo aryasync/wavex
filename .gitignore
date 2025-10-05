@@ -2,6 +2,9 @@
 .env
 .env.local
 
+# user data
+items.data.json
+
 # dependencies
 node_modules/
 
