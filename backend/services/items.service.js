@@ -30,10 +30,10 @@ class ItemService {
    */
   createItemData(data) {
     const now = new Date().toISOString().split("T")[0]; // Today's date in YYYY-MM-DD
-    const addedDate = data.addedDate || now;
+    const purchasedDate = data.purchasedDate || now;
     
-    // Calculate expiry date by adding expiryPeriod to addedDate
-    const expiryDate = new Date(addedDate);
+    // Calculate expiry date by adding expiryPeriod to purchasedDate
+    const expiryDate = new Date(purchasedDate);
     expiryDate.setDate(expiryDate.getDate() + data.expiryPeriod);
     const expiryDateString = expiryDate.toISOString().split("T")[0];
 
@@ -44,17 +44,17 @@ class ItemService {
       id: generateId(),
       name: capitalizedName,
       expiryPeriod: data.expiryPeriod,
-      expiryDate: expiryDateString, // Calculated from addedDate + expiryPeriod
-      addedDate: addedDate,
+      expiryDate: expiryDateString, // Calculated from purchasedDate + expiryPeriod
+      purchasedDate: purchasedDate,
       category: data.category || "other",
     };
   }
 
   /**
-   * Calculate expiry date from addedDate and expiryPeriod
+   * Calculate expiry date from purchasedDate and expiryPeriod
    */
-  calculateExpiryDate(addedDate, expiryPeriod) {
-    const expiryDate = new Date(addedDate);
+  calculateExpiryDate(purchasedDate, expiryPeriod) {
+    const expiryDate = new Date(purchasedDate);
     expiryDate.setDate(expiryDate.getDate() + expiryPeriod);
     return expiryDate.toISOString().split("T")[0];
   }
@@ -63,8 +63,8 @@ class ItemService {
    * Recalculate expiry date for an item
    */
   recalculateExpiryDate(item) {
-    if (item.expiryPeriod && item.addedDate) {
-      item.expiryDate = this.calculateExpiryDate(item.addedDate, item.expiryPeriod);
+    if (item.expiryPeriod && item.purchasedDate) {
+      item.expiryDate = this.calculateExpiryDate(item.purchasedDate, item.expiryPeriod);
     }
     return item;
   }
