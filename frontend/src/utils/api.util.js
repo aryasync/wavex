@@ -44,6 +44,13 @@ export const itemsApi = {
   },
 
   /**
+   * Get items filtered by status
+   */
+  getByStatus: async (status) => {
+    return makeApiRequest(`/items?status=${status}`);
+  },
+
+  /**
    * Get item by ID from backend
    */
   getById: async (id) => {
@@ -77,6 +84,33 @@ export const itemsApi = {
     return makeApiRequest(`/items/${id}`, {
       method: 'DELETE',
     });
+  },
+
+  /**
+   * Analyze image with AI and create pending items
+   */
+  analyzeImage: async (imageData) => {
+    // Convert base64 data URL to blob
+    const response = await fetch(imageData);
+    const blob = await response.blob();
+    
+    // Create FormData for file upload
+    const formData = new FormData();
+    formData.append('image', blob, 'captured-image.jpg');
+    
+    // Make request to analyze endpoint
+    const url = `${API_BASE_URL}/items/analyze-image`;
+    const apiResponse = await fetch(url, {
+      method: 'POST',
+      body: formData,
+    });
+    
+    if (!apiResponse.ok) {
+      const errorData = await apiResponse.json().catch(() => ({}));
+      throw new Error(errorData.message || `HTTP error! status: ${apiResponse.status}`);
+    }
+    
+    return apiResponse.json();
   }
 };
 

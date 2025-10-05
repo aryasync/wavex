@@ -103,7 +103,7 @@ const ItemsTable = ({
       </div>
 
       {/* Divider */}
-      <div className="w-full h-px bg-gradient-to-r from-transparent via-green-400/30 to-transparent mb-4"></div>
+      <div className="w-full h-px bg-gradient-to-r from-transparent via-green-400/50 to-transparent mb-4"></div>
 
       {/* Table Rows with expiry-based backgrounds */}
       <div className="space-y-1">

@@ -1,5 +1,6 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import ImageConfirmationPage from "./ImageConfirmationPage";
+import NewItemsConfirmationPage from "./NewItemsConfirmationPage";
 import CalendarPage from "./CalendarPage";
 import NotificationsPage from "./NotificationsPage";
 import ManualInputPage from "./ManualInputPage";
@@ -19,6 +20,7 @@ function App() {
       case '/notifications': return 'notifications';
       case '/manual-input': return 'manual-input';
       case '/image-confirmation': return 'image-confirmation';
+      case '/new-items-confirmation': return 'new-items-confirmation';
       default: return 'home';
     }
   };
@@ -35,6 +37,7 @@ function App() {
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/manual-input" element={<ManualInputPage />} />
           <Route path="/image-confirmation" element={<ImageConfirmationPage />} />
+          <Route path="/new-items-confirmation" element={<NewItemsConfirmationPage />} />
         </Routes>
       </DarkThemeLayout>
     </ItemsProvider>
