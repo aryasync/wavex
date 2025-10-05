@@ -46,6 +46,22 @@ class ItemService {
   }
 
   /**
+   * Create item data structure
+   */
+  createItemData(data) {
+    const now = new Date().toISOString().split("T")[0]; // Today's date in YYYY-MM-DD
+
+    return {
+      id: generateId(),
+      name: data.name,
+      expiryDate: data.expiryDate,
+      addedDate: data.addedDate || now,
+      dateBought: data.dateBought || data.addedDate || now,
+      category: data.category || "other",
+    };
+  }
+
+  /**
    * Get items with flexible filtering
    */
   async getItems(filters = {}) {
