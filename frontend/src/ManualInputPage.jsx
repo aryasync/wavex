@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import DarkThemeLayout from './components/DarkThemeLayout';
 import FuturisticCard from './components/FuturisticCard';
 import FuturisticButton from './components/FuturisticButton';
-import { useItems } from './App';
+import { useItems } from './hooks/useItems';
 
 const ManualInputPage = () => {
   const navigate = useNavigate();

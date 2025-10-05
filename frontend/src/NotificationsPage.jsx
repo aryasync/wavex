@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import DarkThemeLayout from './components/DarkThemeLayout';
 import FuturisticCard from './components/FuturisticCard';
-import { useItems } from './App';
+import { useItems } from './hooks/useItems';
 
 const NotificationsPage = () => {
   const { items, removeItem } = useItems();

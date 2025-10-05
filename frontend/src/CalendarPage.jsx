@@ -5,7 +5,7 @@ import FuturisticCard from "./components/FuturisticCard";
 import FuturisticButton from "./components/FuturisticButton";
 import FuturisticTable from "./components/FuturisticTable";
 import CameraModal from "./components/CameraModal";
-import { useItems } from "./App";
+import { useItems } from "./hooks/useItems";
 
 function CalendarPage() {
   const navigate = useNavigate();

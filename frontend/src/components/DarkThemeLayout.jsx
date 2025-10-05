@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import AboutModal from "./AboutModal";
-import { useItems } from "../App";
+import { useItems } from "../hooks/useItems";
 
 const DarkThemeLayout = ({ children, title, showWaveIcon = true, onCameraClick }) => {
   const navigate = useNavigate();

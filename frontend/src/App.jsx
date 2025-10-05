@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import ImageConfirmationPage from "./ImageConfirmationPage";
 import CalendarPage from "./CalendarPage";
@@ -14,17 +14,7 @@ import DarkThemeLayout from "./components/DarkThemeLayout";
 import FuturisticCard from "./components/FuturisticCard";
 import FuturisticButton from "./components/FuturisticButton";
 import FuturisticTable from "./components/FuturisticTable";
-
-// Create context for shared items state
-const ItemsContext = createContext();
-
-export const useItems = () => {
-  const context = useContext(ItemsContext);
-  if (!context) {
-    throw new Error('useItems must be used within an ItemsProvider');
-  }
-  return context;
-};
+import { ItemsContext, useItems } from "./hooks/useItems";
 
 // Items Provider Component
 function ItemsProvider({ children }) {

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { useItems } from "../App";
+import { useItems } from "../hooks/useItems";
 
 const WaveXHomePage = () => {
   const { items, loading, error, refetchItems } = useItems();
