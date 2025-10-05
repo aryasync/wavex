@@ -24,6 +24,7 @@ const upload = multer({
 
 // Routes
 router.get("/items", (req, res) => itemController.getItems(req, res));
+router.get("/items/categories", (req, res) => itemController.getCategories(req, res));
 router.get("/items/:id", (req, res) => itemController.getItemById(req, res));
 router.post("/items", (req, res) => itemController.createItem(req, res));
 router.put("/items/:id", (req, res) => itemController.updateItem(req, res));

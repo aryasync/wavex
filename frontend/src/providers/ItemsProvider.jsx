@@ -27,12 +27,7 @@ export function ItemsProvider({ children }) {
     } catch (err) {
       console.error("Error fetching items:", err);
       setError(err.message);
-      // Set some default items for testing
-      setItems([
-        { id: 1, name: "Sample Milk", category: "Dairy", expiryDate: "2024-01-20", icon: "🥛", purchasedDate: "2024-01-15" },
-        { id: 2, name: "Sample Bread", category: "Other", expiryDate: "2024-01-18", icon: "🍞", purchasedDate: "2024-01-14" },
-        { id: 3, name: "Sample Apples", category: "Produce", expiryDate: "2024-01-25", icon: "🍎", purchasedDate: "2024-01-13" }
-      ]);
+      setItems([]);
     } finally {
       setLoading(false);
     }

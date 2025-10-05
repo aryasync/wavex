@@ -92,7 +92,7 @@ const WaveXHomePage = () => {
           <div key={category.name} className="absolute top-0" style={{ left: `${index * 73}px` }}>
             <button
               onClick={() => handleCategoryClick(category.name)}
-              className={`w-[53px] h-[55px] rounded-[19.88px] bg-[linear-gradient(180deg,rgba(128,255,224,0.2)_0%,rgba(43,216,208,0.5)_50%,rgba(0,140,255,1)_100%)] hover:scale-105 transition-transform duration-300 flex items-center justify-center ${
+              className={`w-[53px] h-[55px] rounded-[19.88px] bg-[linear-gradient(180deg,rgba(128,255,224,0.2)_0%,rgba(43,216,208,0.5)_50%,rgba(0,140,255,1)_100%)] hover:scale-105 transition-transform duration-200 flex items-center justify-center ${
                 selectedCategories.includes(category.name) 
                   ? 'ring-2 ring-white/50 shadow-lg' 
                   : ''

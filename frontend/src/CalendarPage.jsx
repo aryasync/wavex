@@ -219,7 +219,7 @@ function CalendarPage() {
     return baseMargin + additionalMargin;
   };
 
-  return (
+  return (  
     <DarkThemeLayout title="PICK EXPIRATION DATE" onCameraClick={() => setIsCameraOpen(true)}>
       {/* Calendar Box */}
       <FuturisticCard height="h-80">
@@ -229,7 +229,7 @@ function CalendarPage() {
             ‹
           </FuturisticButton>
           
-          <h2 className="text-xl font-semibold text-white font-['Orbitron']">
+          <h2 className="text-xl font-semibold text-white ">
             {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
           </h2>
           
@@ -325,7 +325,7 @@ function CalendarPage() {
       {/* Items for Selected Date (only show when not from confirmation) */}
       {!fromConfirmation && selectedDate && (
         <div style={{ marginTop: `${getDynamicMargin()}px` }}>
-          <h3 className="text-xl font-bold font-['Orbitron'] mb-4 text-center text-white">
+          <h3 className="text-xl font-bold  mb-4 text-center text-white">
             Items Expiring on {selectedDate.toLocaleDateString()}
           </h3>
           

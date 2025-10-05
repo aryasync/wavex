@@ -1,23 +1,27 @@
 import { useState, useMemo, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCategories } from '../hooks/useCategories';
 
 const HorizontalBarChart = ({ data = [], title = "Fridge Contents", onCategoryClick, selectedCategories = [] }) => {
   const [hoveredSegment, setHoveredSegment] = useState(null);
-  const navigate = useNavigate();
+  const { categories, getCategoryColor } = useCategories();
 
-  // Default data with better color scheme and navigation routes
-  const defaultData = [
-    { label: 'Produce', value: 30, color: '#10B981', route: '/category/produce' },
-    { label: 'Dairy', value: 20, color: '#F59E0B', route: '/category/dairy' },
-    { label: 'Meat', value: 15, color: '#EF4444', route: '/category/meat' },
-    { label: 'Pantry', value: 12, color: '#8B5CF6', route: '/category/pantry' },
-    { label: 'Other', value: 10, color: '#6B7280', route: '/category/other' }
-  ];
+  // Default data using real categories from backend
+  const defaultData = useMemo(() => {
+    return categories.map((category, index) => ({
+      label: category.charAt(0).toUpperCase() + category.slice(1), // Capitalize first letter
+      value: 0, // Will be overridden by actual data
+      color: getCategoryColor(category, index)
+    }));
+  }, [categories, getCategoryColor]);
 
   // Memoize chart calculations for better performance
   const chartData = useMemo(() => {
-    return data.length > 0 ? data : defaultData;
-  }, [data]);
+    if (data.length > 0) {
+      return data;
+    }
+    // If no data, show categories with zero values
+    return defaultData;
+  }, [data, defaultData]);
 
   const total = useMemo(() => {
     return chartData.reduce((sum, item) => sum + item.value, 0);
@@ -95,7 +99,7 @@ const HorizontalBarChart = ({ data = [], title = "Fridge Contents", onCategoryCl
               return (
                 <div
                   key={segment.index}
-                  className={`h-full transition-all duration-300 cursor-pointer ${
+                  className={`h-full transition-all duration-200 cursor-pointer ${
                     isSelected 
                       ? 'opacity-100 shadow-inner' 
                       : isHovered 
@@ -127,7 +131,7 @@ const HorizontalBarChart = ({ data = [], title = "Fridge Contents", onCategoryCl
           return (
             <div
               key={segment.index}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 cursor-pointer transform ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 cursor-pointer transform ${
                 isSelected 
                   ? 'bg-white/40 ring-2 ring-white/80 shadow-lg scale-105' 
                   : isHovered 
@@ -142,13 +146,13 @@ const HorizontalBarChart = ({ data = [], title = "Fridge Contents", onCategoryCl
               aria-label={`${segment.label}: ${segment.value} items - Click to ${isSelected ? 'deselect' : 'select'}`}
             >
               <div
-                className={`w-3 h-3 rounded-full flex-shrink-0 transition-all duration-300 ${
+                className={`w-3 h-3 rounded-full flex-shrink-0 transition-all duration-200 ${
                   isSelected ? 'ring-2 ring-white/60' : ''
                 }`}
                 style={{ backgroundColor: segment.color }}
                 aria-hidden="true"
               />
-              <span className={`text-xs font-medium transition-colors duration-300 ${
+              <span className={`text-xs font-medium transition-colors duration-200 ${
                 isSelected ? 'text-white font-semibold' : 'text-white/90'
               }`}>
                 {segment.label}

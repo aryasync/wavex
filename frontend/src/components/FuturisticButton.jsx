@@ -7,7 +7,7 @@ const FuturisticButton = ({
   size = "md",
   ...props 
 }) => {
-  const baseClasses = "font-medium transition-colors duration-200 flex items-center justify-center font-['Orbitron']";
+  const baseClasses = "font-medium transition-colors duration-200 flex items-center justify-center ";
   
   const sizeClasses = {
     sm: "px-3 py-2 text-sm rounded-lg",

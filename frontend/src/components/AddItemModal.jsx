@@ -47,7 +47,7 @@ const AddItemModal = ({ isOpen, onClose, onAddItem, initialExpirationDate }) => 
           ✕
         </button>
 
-        <h2 className="text-white text-2xl font-bold text-center mb-8 font-['Orbitron']">
+        <h2 className="text-white text-2xl font-bold text-center mb-8 ">
           MANUALLY INPUT ITEM
         </h2>
 
@@ -58,7 +58,7 @@ const AddItemModal = ({ isOpen, onClose, onAddItem, initialExpirationDate }) => 
             placeholder="NAME"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full p-4 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-blue-300 font-['Orbitron']"
+            className="w-full p-4 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-blue-300 "
           />
 
           {/* Today's Date Input */}
@@ -67,7 +67,7 @@ const AddItemModal = ({ isOpen, onClose, onAddItem, initialExpirationDate }) => 
             placeholder="TODAY'S DATE"
             value={todayDate}
             onChange={(e) => setTodayDate(e.target.value)}
-            className="w-full p-4 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-blue-300 font-['Orbitron']"
+            className="w-full p-4 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-blue-300 "
           />
 
           {/* Expiration Date Input */}
@@ -76,7 +76,7 @@ const AddItemModal = ({ isOpen, onClose, onAddItem, initialExpirationDate }) => 
             placeholder="EXPIRATION DATE"
             value={expirationDate}
             onChange={(e) => setExpirationDate(e.target.value)}
-            className="w-full p-4 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-blue-300 font-['Orbitron']"
+            className="w-full p-4 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-blue-300 "
           />
 
           {/* Category Input */}
@@ -85,13 +85,13 @@ const AddItemModal = ({ isOpen, onClose, onAddItem, initialExpirationDate }) => 
             placeholder="CATEGORY"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full p-4 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-blue-300 font-['Orbitron']"
+            className="w-full p-4 rounded-full bg-gradient-to-r from-blue-500 to-teal-500 text-white placeholder-white placeholder-opacity-70 focus:outline-none focus:ring-2 focus:ring-blue-300 "
           />
         </div>
 
         {/* Confirm Button */}
         <button
-          className="w-full py-4 rounded-full bg-gradient-to-r from-blue-600 to-teal-600 text-white text-xl font-bold font-['Orbitron'] hover:from-blue-700 hover:to-teal-700 transition-all"
+          className="w-full py-4 rounded-full bg-gradient-to-r from-blue-600 to-teal-600 text-white text-xl font-bold  hover:from-blue-700 hover:to-teal-700 transition-all"
           onClick={handleConfirm}
         >
           CONFIRM

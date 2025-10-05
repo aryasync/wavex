@@ -57,7 +57,7 @@ const ManualInputPage = () => {
     <div>
       {/* Header */}
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-white font-['Kodchasan'] mb-2">
+        <h2 className="text-2xl font-bold text-white mb-2">
           Add New Item
         </h2>
         <p className="text-white/70 text-sm">
@@ -69,7 +69,7 @@ const ManualInputPage = () => {
       <div className="space-y-6 mb-8">
         {/* Name Input */}
         <div className="space-y-2">
-          <label className="block text-white font-['Orbitron'] text-sm font-semibold uppercase tracking-wider">
+          <label className="block text-white  text-sm font-semibold uppercase tracking-wider">
             Item Name
           </label>
           <FuturisticCard height="h-auto" gradient="from-blue-500 to-teal-500">
@@ -79,7 +79,7 @@ const ManualInputPage = () => {
                 placeholder="Enter item name (e.g., Milk, Apples, Bread)"
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
-                className="w-full bg-transparent text-white placeholder-white/60 font-['Orbitron'] text-lg font-semibold outline-none focus:placeholder-white/40 transition-all"
+                className="w-full bg-transparent text-white placeholder-white/60  text-lg font-semibold outline-none focus:placeholder-white/40 transition-all"
                 autoFocus
               />
             </div>
@@ -88,7 +88,7 @@ const ManualInputPage = () => {
 
         {/* Category Input */}
         <div className="space-y-2">
-          <label className="block text-white font-['Orbitron'] text-sm font-semibold uppercase tracking-wider">
+          <label className="block text-white  text-sm font-semibold uppercase tracking-wider">
             Category
           </label>
           <FuturisticCard height="h-auto" gradient="from-blue-500 to-teal-500">
@@ -96,7 +96,7 @@ const ManualInputPage = () => {
               <select
                 value={formData.category}
                 onChange={(e) => handleInputChange('category', e.target.value)}
-                className="w-full bg-transparent text-white font-['Orbitron'] text-lg font-semibold outline-none cursor-pointer"
+                className="w-full bg-transparent text-white  text-lg font-semibold outline-none cursor-pointer"
               >
                 <option value="" className="bg-gray-800 text-white/60">Select a category</option>
                 {categories.map(category => (
@@ -111,7 +111,7 @@ const ManualInputPage = () => {
 
         {/* Purchase Date Input */}
         <div className="space-y-2">
-          <label className="block text-white font-['Orbitron'] text-sm font-semibold uppercase tracking-wider">
+          <label className="block text-white  text-sm font-semibold uppercase tracking-wider">
             Date Purchased
           </label>
           <FuturisticCard height="h-auto" gradient="from-blue-500 to-teal-500">
@@ -120,7 +120,7 @@ const ManualInputPage = () => {
                 type="date"
                 value={formData.todaysDate}
                 onChange={(e) => handleInputChange('todaysDate', e.target.value)}
-                className="w-full bg-transparent text-white font-['Orbitron'] text-lg font-semibold outline-none cursor-pointer"
+                className="w-full bg-transparent text-white  text-lg font-semibold outline-none cursor-pointer"
               />
             </div>
           </FuturisticCard>
@@ -128,7 +128,7 @@ const ManualInputPage = () => {
 
         {/* Expiration Date Input */}
         <div className="space-y-2">
-          <label className="block text-white font-['Orbitron'] text-sm font-semibold uppercase tracking-wider">
+          <label className="block text-white  text-sm font-semibold uppercase tracking-wider">
             Expiration Date
           </label>
           <FuturisticCard height="h-auto" gradient="from-red-500 to-orange-500">
@@ -137,7 +137,7 @@ const ManualInputPage = () => {
                 type="date"
                 value={formData.expirationDate}
                 onChange={(e) => handleInputChange('expirationDate', e.target.value)}
-                className="w-full bg-transparent text-white font-['Orbitron'] text-lg font-semibold outline-none cursor-pointer"
+                className="w-full bg-transparent text-white  text-lg font-semibold outline-none cursor-pointer"
               />
             </div>
           </FuturisticCard>
@@ -149,7 +149,7 @@ const ManualInputPage = () => {
         {/* Confirm Button */}
         <FuturisticButton 
           variant="primary" 
-          className="w-full py-4 text-lg font-semibold font-['Orbitron']"
+          className="w-full py-4 text-lg font-semibold "
           onClick={handleConfirm}
           disabled={!formData.name || !formData.expirationDate || !formData.category}
         >
@@ -160,7 +160,7 @@ const ManualInputPage = () => {
         <div className="flex justify-center">
           <FuturisticButton 
             variant="secondary" 
-            className="px-8 py-3 text-sm font-['Orbitron']"
+            className="px-8 py-3 text-sm "
             onClick={handleCancel}
           >
             ✕ CANCEL
@@ -171,7 +171,7 @@ const ManualInputPage = () => {
       {/* Form Status */}
       {(!formData.name || !formData.expirationDate || !formData.category) && (
         <div className="mt-6 text-center">
-          <p className="text-white/50 text-xs font-['Orbitron']">
+          <p className="text-white/50 text-xs ">
             Please fill in all required fields to add the item
           </p>
         </div>

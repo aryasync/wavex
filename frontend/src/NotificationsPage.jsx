@@ -75,7 +75,7 @@ const NotificationsPage = () => {
   return (
     <div>
       {/* Main Notifications Card */}
-      <FuturisticCard height="h-auto" gradient="from-teal-600 to-blue-500">
+      <FuturisticCard height="h-auto">
         <div className="relative">
           {/* Background Pufferfish Illustration */}
           <div className="absolute top-[200%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-15">

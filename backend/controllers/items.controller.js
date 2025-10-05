@@ -36,6 +36,25 @@ class ItemController {
   }
 
   /**
+   * Get available categories from config
+   */
+  async getCategories(req, res) {
+    try {
+      const categories = config.business.validCategories;
+      res.json({
+        success: true,
+        categories: categories
+      });
+    } catch (error) {
+      console.error("Error getting categories:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to retrieve categories",
+      });
+    }
+  }
+
+  /**
    * Get item by ID
    */
   async getItemById(req, res) {

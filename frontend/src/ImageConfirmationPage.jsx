@@ -25,7 +25,7 @@ function ImageConfirmationPage() {
       <DarkThemeLayout title="NO IMAGE">
         <FuturisticCard height="h-auto" gradient="from-red-600 to-pink-600">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-white font-['Orbitron'] mb-6">
+            <h2 className="text-2xl font-bold text-white  mb-6">
               No Image Data Found
             </h2>
             <p className="text-white/80 mb-8">No image data was passed to this page.</p>
@@ -43,7 +43,7 @@ function ImageConfirmationPage() {
       {/* Image Preview */}
       <FuturisticCard height="h-auto" gradient="from-purple-600 to-blue-600">
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-white font-['Orbitron'] mb-4">
+          <h2 className="text-2xl font-bold text-white  mb-4">
             Image Confirmation
           </h2>
           <div className="bg-black/20 rounded-lg overflow-hidden">

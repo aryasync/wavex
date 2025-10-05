@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 const AboutModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
@@ -8,7 +6,7 @@ const AboutModal = ({ isOpen, onClose }) => {
       <div className="bg-[#1a3636] rounded-lg p-6 max-w-md w-full mx-4 border border-white/20">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-white font-['Orbitron']">About Tsunami Fridge</h2>
+          <h2 className="text-2xl font-bold text-white ">About Tsunami Fridge</h2>
           <button
             onClick={onClose}
             className="text-white/60 hover:text-white text-2xl font-bold"
