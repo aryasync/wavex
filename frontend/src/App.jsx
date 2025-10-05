@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext } from "react";
+import { useState, useEffect, createContext, useContext, useMemo } from "react";
 import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import ImageConfirmationPage from "./ImageConfirmationPage";
 import CalendarPage from "./CalendarPage";
@@ -109,6 +109,32 @@ function FridgePage() {
     navigate('/image-confirmation', { state: { imageData } });
   };
 
+  // Calculate category counts from actual items data
+  const categoryData = useMemo(() => {
+    const categoryCounts = {};
+    
+    // Count items by category
+    items.forEach(item => {
+      const category = item.category.toLowerCase();
+      categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+    });
+    
+    // Convert to chart data format with colors
+    const colors = {
+      'fruits': '#3B82F6',
+      'vegetables': '#10B981', 
+      'dairy': '#F59E0B',
+      'meat': '#EF4444',
+      'other': '#8B5CF6'
+    };
+    
+    return Object.entries(categoryCounts).map(([category, count]) => ({
+      label: category.charAt(0).toUpperCase() + category.slice(1), // Capitalize first letter
+      value: count,
+      color: colors[category] || '#8B5CF6'
+    }));
+  }, [items]);
+
   // Filter items based on selected categories
   const filteredItems = selectedCategories.length > 0 
     ? items.filter(item => 
@@ -140,7 +166,11 @@ function FridgePage() {
       <FuturisticCard height="h-64">
         <div className="text-center mb-4 -mt-4">
           <h2 className="text-xl font-semibold text-white font-['Orbitron'] mb-4">Inventory Overview</h2>
-          <HorizontalBarChart onCategoryClick={handleCategoryClick} selectedCategories={selectedCategories} />
+          <HorizontalBarChart 
+            data={categoryData}
+            onCategoryClick={handleCategoryClick} 
+            selectedCategories={selectedCategories} 
+          />
         </div>
       </FuturisticCard>
       

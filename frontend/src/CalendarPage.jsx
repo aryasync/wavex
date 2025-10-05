@@ -160,19 +160,29 @@ function CalendarPage() {
       const isCurrentDay = isToday(day);
       const isSelectedDay = isSelected(day);
       
+      // Check if there are items expiring on this day
+      const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+      const dayDateString = dayDate.toISOString().split('T')[0];
+      const itemsForDay = items.filter(item => item.expiryDate === dayDateString);
+      const hasItems = itemsForDay.length > 0;
+      
       days.push(
         <button
           key={day}
           onClick={() => handleDateClick(day)}
           className={`
-            h-8 w-8 rounded-full flex items-center justify-center text-xs font-medium
+            h-8 w-8 rounded-full flex items-center justify-center text-xs font-medium relative
             transition-colors hover:bg-white/20
             ${isCurrentDay ? 'bg-white text-blue-600 font-bold' : ''}
             ${isSelectedDay && !isCurrentDay ? 'bg-white/30 text-white' : ''}
             ${!isCurrentDay && !isSelectedDay ? 'text-white/80 hover:text-white' : ''}
+            ${hasItems ? 'ring-1 ring-green-400' : ''}
           `}
         >
           {day}
+          {hasItems && (
+            <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full"></div>
+          )}
         </button>
       );
     }
@@ -242,6 +252,18 @@ function CalendarPage() {
           {/* Calendar Days */}
           <div className="grid grid-cols-7 gap-1">
             {renderCalendar()}
+          </div>
+          
+          {/* Legend */}
+          <div className="flex justify-center items-center mt-4 space-x-4 text-xs text-white/60">
+            <div className="flex items-center space-x-1">
+              <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+              <span>Items expiring</span>
+            </div>
+            <div className="flex items-center space-x-1">
+              <div className="w-2 h-2 bg-white rounded-full"></div>
+              <span>Today</span>
+            </div>
           </div>
         </div>
 

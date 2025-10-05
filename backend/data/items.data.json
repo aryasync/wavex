@@ -4,46 +4,52 @@
     "name": "Apples",
     "expiryDate": "2025-10-07",
     "addedDate": "2025-10-04",
+    "dateBought": "2025-10-04",
     "category": "fruits",
     "quantity": "1"
   },
   {
     "id": "1703123456789",
     "name": "Milk",
-    "expiryDate": "2025-01-15",
-    "addedDate": "2025-01-10",
+    "expiryDate": "2025-10-15",
+    "addedDate": "2025-10-08",
+    "dateBought": "2025-10-08",
     "category": "dairy",
     "quantity": "1"
   },
   {
     "id": "1703123456790",
     "name": "Bread",
-    "expiryDate": "2025-01-12",
-    "addedDate": "2025-01-10",
+    "expiryDate": "2025-10-11",
+    "addedDate": "2025-10-06",
+    "dateBought": "2025-10-06",
     "category": "other",
     "quantity": "1"
   },
   {
     "id": "1c1a8b6dd54282c182c09a9552bfb3bf",
     "name": "Carrots",
-    "expiryDate": "2025-01-20",
+    "expiryDate": "2025-10-20",
     "addedDate": "2025-10-04",
+    "dateBought": "2025-10-04",
     "category": "fruits",
     "quantity": "1"
   },
   {
     "id": "54a07b657b86e7679423450d58fadd2a",
     "name": "Lays",
-    "expiryDate": "2025-01-20",
+    "expiryDate": "2025-10-20",
     "addedDate": "2025-10-04",
+    "dateBought": "2025-10-04",
     "category": "fruits",
     "quantity": "1"
   },
   {
     "id": "429c14aa78f6ae2d4d834237e0376304",
     "name": "Steak",
-    "expiryDate": "2025-01-20",
+    "expiryDate": "2025-10-20",
     "addedDate": "2025-10-04",
+    "dateBought": "2025-10-04",
     "category": "other",
     "quantity": "1"
   }

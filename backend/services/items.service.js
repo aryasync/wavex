@@ -60,6 +60,7 @@ class ItemService {
       name: data.name,
       expiryDate: data.expiryDate,
       addedDate: data.addedDate || now,
+      dateBought: data.dateBought || data.addedDate || now,
       category: data.category || "other",
       quantity: data.quantity || "1",
     };
