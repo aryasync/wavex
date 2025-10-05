@@ -9,7 +9,6 @@ export class NotificationService {
 
   /**
    * Load notifications from file
-   * @returns {Promise<Array>} Array of notifications
    */
   async loadNotifications() {
     try {
@@ -26,8 +25,6 @@ export class NotificationService {
 
   /**
    * Save notifications to file
-   * @param {Array} notifications - Array of notifications to save
-   * @returns {Promise<void>}
    */
   async saveNotifications(notifications) {
     await fs.writeFile(this.dataFilePath, JSON.stringify(notifications, null, 2));
@@ -35,10 +32,6 @@ export class NotificationService {
 
   /**
    * Get all notifications with optional filters
-   * @param {Object} filters - Filter options
-   * @param {string} filters.type - Filter by notification type
-   * @param {boolean} filters.isRead - Filter by read status (true for read, false for unread)
-   * @returns {Promise<Array>} Filtered notifications
    */
   async getNotifications(filters = {}) {
     const notifications = await this.loadNotifications();
@@ -65,8 +58,6 @@ export class NotificationService {
 
   /**
    * Get a single notification by ID
-   * @param {string} id - Notification ID
-   * @returns {Promise<Object|null>} Notification object or null if not found
    */
   async getNotificationById(id) {
     const notifications = await this.loadNotifications();
@@ -75,11 +66,6 @@ export class NotificationService {
 
   /**
    * Create a new notification
-   * @param {Object} notificationData - Notification data
-   * @param {string} notificationData.type - Notification type
-   * @param {string} notificationData.message - Notification message
-   * @param {string} notificationData.itemId - Optional item ID
-   * @returns {Promise<Object>} Created notification
    */
   async createNotification(notificationData) {
     const notifications = await this.loadNotifications();
@@ -102,8 +88,6 @@ export class NotificationService {
 
   /**
    * Delete notifications by IDs
-   * @param {Array<string>} ids - Array of notification IDs to delete
-   * @returns {Promise<Object>} Result object with success count and deleted notifications
    */
   async deleteNotifications(ids) {
     const notifications = await this.loadNotifications();
@@ -127,9 +111,6 @@ export class NotificationService {
 
   /**
    * Update existing notification
-   * @param {string} id - Notification ID
-   * @param {Object} updateData - Data to update
-   * @returns {Promise<Object>} Updated notification
    */
   async updateNotification(id, updateData) {
     const notifications = await this.loadNotifications();
@@ -155,7 +136,6 @@ export class NotificationService {
 
   /**
    * Get notification statistics
-   * @returns {Promise<Object>} Statistics object
    */
   async getNotificationStats() {
     const notifications = await this.loadNotifications();

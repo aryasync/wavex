@@ -75,15 +75,6 @@ class ItemService {
 
   /**
    * Get items with flexible filtering
-   * @param {Object} filters - Filter options
-   * @param {string} filters.category - Filter by category
-   * @param {string} filters.status - Filter by status
-   * @param {string} filters.source - Filter by source
-   * @param {string} filters.generatedBy - Filter by generatedBy
-   * @param {boolean} filters.expired - Filter for expired items
-   * @param {boolean} filters.expiring - Filter for expiring items
-   * @param {number} filters.expiringDays - Days for expiring filter
-   * @returns {Array} Filtered items
    */
   async getItems(filters = {}) {
     const items = await readJsonFile(this.dataFile);

@@ -6,11 +6,6 @@ import { config } from "../config/index.js";
 export class ItemValidator {
   /**
    * Validate item data
-   * @param {Object} item - The item to validate
-   * @param {Object} options - Validation options
-   * @param {boolean} options.throwOnError - Whether to throw errors or return validation result
-   * @param {number} options.itemIndex - Index of item (for error messages)
-   * @returns {Object|void} Validation result or throws error
    */
   static validateItem(item, options = {}) {
     const { throwOnError = false, itemIndex = null } = options;
@@ -105,9 +100,6 @@ export class ItemValidator {
 
   /**
    * Validate and process item (validation + capitalization)
-   * @param {Object} item - The item to validate and process
-   * @param {Object} options - Validation options
-   * @returns {Object} Processed item
    */
   static validateAndProcessItem(item, options = {}) {
     // Validate the item (includes source validation)
