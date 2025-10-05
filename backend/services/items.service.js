@@ -38,7 +38,7 @@ class ItemService {
     }
 
     // Check category if provided
-    const validCategories = config.business.categories;
+    const validCategories = config.business.supportedCategories;
     if (item.category && !validCategories.includes(item.category)) {
       errors.push(`Category must be one of: ${validCategories.join(", ")}`);
     }
@@ -62,22 +62,31 @@ class ItemService {
       addedDate: data.addedDate || now,
       dateBought: data.dateBought || data.addedDate || now,
       category: data.category || "other",
-      quantity: data.quantity || "1",
     };
   }
 
   /**
    * Get all items
+   * @param {string} category - Optional category filter
    */
-  async getAllItems() {
-    return readJsonFile(this.dataFile);
+  async getItemsByCategory(category = null) {
+    const items = await readJsonFile(this.dataFile);
+
+    // If no category specified, return all items
+    if (!category) return items;
+
+    // Filter by category (case-insensitive)
+    return items.filter(
+      (item) =>
+        item.category && item.category.toLowerCase() === category.toLowerCase()
+    );
   }
 
   /**
    * Get item by ID
    */
   async getItemById(id) {
-    const items = await this.getAllItems();
+    const items = await this.getItemsByCategory();
     return findItemById(items, id);
   }
 
@@ -85,7 +94,7 @@ class ItemService {
    * Get items that are expiring soon
    */
   async getExpiringItems(days = config.business.expiryWarningDays) {
-    const items = await this.getAllItems();
+    const items = await this.getItemsByCategory();
     return items.filter(
       (item) =>
         !isDateInPast(item.expiryDate) &&
@@ -97,7 +106,7 @@ class ItemService {
    * Get expired items
    */
   async getExpiredItems() {
-    const items = await this.getAllItems();
+    const items = await this.getItemsByCategory();
     return items.filter((item) => isDateInPast(item.expiryDate));
   }
 
@@ -111,20 +120,13 @@ class ItemService {
       throw new Error(`Validation failed: ${validation.errors.join(", ")}`);
     }
 
-    // Create item with proper schema
     const newItem = this.createItemData(itemData);
-
-    // Read existing items
-    const items = await this.getAllItems();
-
-    // Add new item
+    const items = await this.getItemsByCategory();
     items.push(newItem);
 
     // Save to file
     const success = writeJsonFile(this.dataFile, items);
-    if (!success) {
-      throw new Error("Failed to save item");
-    }
+    if (!success) throw new Error("Failed to save item");
 
     return newItem;
   }
@@ -133,7 +135,7 @@ class ItemService {
    * Update existing item
    */
   async updateItem(id, updateData) {
-    const items = await this.getAllItems();
+    const items = await this.getItemsByCategory();
     const itemIndex = items.findIndex((item) => item.id === id);
 
     if (itemIndex === -1) {
@@ -162,7 +164,7 @@ class ItemService {
    * Delete item
    */
   async deleteItem(id) {
-    const items = await this.getAllItems();
+    const items = await this.getItemsByCategory();
     const item = findItemById(items, id);
 
     if (!item) {
