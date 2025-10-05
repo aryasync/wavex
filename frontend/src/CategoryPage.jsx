@@ -41,6 +41,9 @@ const CategoryPage = ({ categoryName, categoryColor, categoryIcon }) => {
             ))}
           </div>
         )}
+        
+        {/* Extending border that grows with content */}
+        <div className="border-t border-gray-200 h-20"></div>
       </div>
 
       {/* Bottom navigation bar with divider */}
