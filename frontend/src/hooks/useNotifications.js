@@ -88,7 +88,7 @@ export const useNotifications = () => {
   const markAllAsRead = async () => {
     try {
       const unreadNotifications = notifications.filter(n => !n.isRead);
-      if (unreadNotifications.length === 0) return;
+      if (unreadNotifications.length === 0) return { success: true, count: 0 };
 
       // Update all unread notifications
       for (const notification of unreadNotifications) {
@@ -98,6 +98,30 @@ export const useNotifications = () => {
       return { success: true, count: unreadNotifications.length };
     } catch (err) {
       console.error('Error marking all notifications as read:', err);
+      return { success: false, error: err.message };
+    }
+  };
+
+  // Delete all notifications
+  const deleteAllNotifications = async () => {
+    try {
+      if (notifications.length === 0) return { success: true, count: 0 };
+
+      const allIds = notifications.map(n => n.id);
+      const response = await fetch('http://localhost:3001/api/notifications', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: allIds }),
+      });
+
+      if (response.ok) {
+        setNotifications([]);
+        return { success: true, count: notifications.length };
+      } else {
+        throw new Error('Failed to delete all notifications');
+      }
+    } catch (err) {
+      console.error('Error deleting all notifications:', err);
       return { success: false, error: err.message };
     }
   };
@@ -133,6 +157,7 @@ export const useNotifications = () => {
     markAsRead,
     deleteNotification,
     markAllAsRead,
+    deleteAllNotifications,
     triggerScheduler,
     refreshNotifications: fetchData,
   };

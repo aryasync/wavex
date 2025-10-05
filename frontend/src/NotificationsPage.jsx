@@ -17,6 +17,7 @@ const NotificationsPage = () => {
     markAsRead,
     deleteNotification,
     markAllAsRead,
+    deleteAllNotifications,
     triggerScheduler,
     refreshNotifications,
   } = useNotifications();
@@ -62,9 +63,29 @@ const NotificationsPage = () => {
 
       {/* Main Notifications Card */}
       <SectionCard title="Notifications">
-        {/* Mark All as Read Button */}
-        {!loading && !error && notifications.some(n => !n.isRead) && (
-          <div className="mb-4">
+        {/* Action Buttons - Only show when notifications exist */}
+        {!loading && !error && notifications.length > 0 && (
+          <div className="mb-4 flex gap-2">
+            {/* Delete All Notifications Button */}
+            <FuturisticButton
+              variant="danger"
+              onClick={async () => {
+                if (window.confirm('Are you sure you want to delete all notifications? This action cannot be undone.')) {
+                  const result = await deleteAllNotifications();
+                  if (result.success) {
+                    showSuccess(`Deleted ${result.count} notifications`);
+                  } else {
+                    showError(`Error: ${result.error}`);
+                  }
+                }
+              }}
+              className="flex-1"
+              disabled={notifications.length === 0}
+            >
+              Delete All
+            </FuturisticButton>
+            
+            {/* Mark All as Read Button */}
             <FuturisticButton
               variant="secondary"
               onClick={async () => {
@@ -75,9 +96,10 @@ const NotificationsPage = () => {
                   showError(`Error: ${result.error}`);
                 }
               }}
-              className="w-full"
+              className="flex-1"
+              disabled={notifications.length === 0 || !notifications.some(n => !n.isRead)}
             >
-              ✓ Mark All as Read
+              Read All
             </FuturisticButton>
           </div>
         )}

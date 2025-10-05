@@ -15,26 +15,29 @@ const ItemsTable = ({
   const handleDeleteItem = async (item) => {
     if (!onDeleteItem) return;
     
-    // Add item to deleting set
+    // Add item to deleting set for fade-out animation
     setDeletingItems(prev => new Set([...prev, item.id]));
     
-    try {
-      await onDeleteItem(item);
-      // Remove from deleting set after successful deletion
-      setDeletingItems(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(item.id);
-        return newSet;
-      });
-    } catch (error) {
-      console.error("Error deleting item:", error);
-      // Remove from deleting set on error
-      setDeletingItems(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(item.id);
-        return newSet;
-      });
-    }
+    // Wait for fade-out animation to complete before actually deleting
+    setTimeout(async () => {
+      try {
+        await onDeleteItem(item);
+        // Remove from deleting set after successful deletion
+        setDeletingItems(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(item.id);
+          return newSet;
+        });
+      } catch (error) {
+        console.error("Error deleting item:", error);
+        // Remove from deleting set on error
+        setDeletingItems(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(item.id);
+          return newSet;
+        });
+      }
+    }, 300); // Wait for 300ms fade-out animation
   };
 
   // Get background color based on days to expire
@@ -121,7 +124,7 @@ const ItemsTable = ({
                 bg-gradient-to-r ${backgroundClass} 
                 hover:bg-gradient-to-r hover:from-red-900/30 hover:to-red-800/20 hover:opacity-80
                 focus:bg-gradient-to-r focus:from-red-900/30 focus:to-red-800/20 focus:opacity-80 focus:outline-none
-                ${isDeleting ? 'opacity-0 scale-95 transform -translate-y-2' : 'opacity-100 scale-100 transform translate-y-0'}
+                ${isDeleting ? 'opacity-0 scale-95 transform -translate-y-2 transition-all duration-300 ease-out' : 'opacity-100 scale-100 transform translate-y-0 transition-all duration-300 ease-out'}
               `}
               tabIndex={0}
             >
