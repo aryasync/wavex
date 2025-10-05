@@ -120,8 +120,10 @@ const ItemsTable = ({
                 relative group grid grid-cols-2 gap-4 py-4 px-4 rounded-lg transition-all duration-300 
                 bg-gradient-to-r ${backgroundClass} 
                 hover:bg-gradient-to-r hover:from-red-900/30 hover:to-red-800/20 hover:opacity-80
+                focus:bg-gradient-to-r focus:from-red-900/30 focus:to-red-800/20 focus:opacity-80 focus:outline-none
                 ${isDeleting ? 'opacity-0 scale-95 transform -translate-y-2' : 'opacity-100 scale-100 transform translate-y-0'}
               `}
+              tabIndex={0}
             >
               <div className="flex items-center">
                 {row[0].content}
@@ -132,7 +134,7 @@ const ItemsTable = ({
               
               {/* Delete button - only show on hover and if onDeleteItem is provided */}
               {onDeleteItem && (
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-200 pointer-events-none">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
