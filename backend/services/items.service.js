@@ -51,52 +51,42 @@ class ItemService {
   async getItems(filters = {}) {
     const items = await readJsonFile(this.dataFile);
 
-    // Recalculate expiry dates for all items
-    const recalculatedItems = items.map(item => this.recalculateExpiryDate(item));
-
-    let filteredItems = recalculatedItems;
-
-    // Apply filters
-    if (filters.category) {
-      filteredItems = filteredItems.filter(
-        (item) =>
-          item.category && item.category.toLowerCase() === filters.category.toLowerCase()
-      );
+    // Single pass: filter and recalculate in one operation
+    const result = [];
+    
+    for (const item of items) {
+      // Recalculate expiry date once per item
+      const recalculatedItem = this.recalculateExpiryDate(item);
+      
+      // Apply all filters in one pass
+      if (filters.category && 
+          (!recalculatedItem.category || 
+           recalculatedItem.category.toLowerCase() !== filters.category.toLowerCase())) {
+        continue;
+      }
+      
+      if (filters.status && recalculatedItem.status !== filters.status) continue;
+      if (filters.source && recalculatedItem.source !== filters.source) continue;
+      if (filters.generatedBy && recalculatedItem.generatedBy !== filters.generatedBy) continue;
+      if (filters.expired && !isDateInPast(recalculatedItem.expiryDate)) continue;
+      if (filters.expiring) {
+        const days = filters.expiringDays || config.business.expiryWarningDays;
+        if (isDateInPast(recalculatedItem.expiryDate) || 
+            !isDateWithinDays(recalculatedItem.expiryDate, days)) continue;
+      }
+      
+      // Item passes all filters, add to result
+      result.push(recalculatedItem);
     }
-
-    if (filters.status) {
-      filteredItems = filteredItems.filter((item) => item.status === filters.status);
-    }
-
-    if (filters.source) {
-      filteredItems = filteredItems.filter((item) => item.source === filters.source);
-    }
-
-    if (filters.generatedBy) {
-      filteredItems = filteredItems.filter((item) => item.generatedBy === filters.generatedBy);
-    }
-
-    if (filters.expired) {
-      filteredItems = filteredItems.filter((item) => isDateInPast(item.expiryDate));
-    }
-
-    if (filters.expiring) {
-      const days = filters.expiringDays || config.business.expiryWarningDays;
-      filteredItems = filteredItems.filter(
-        (item) =>
-          !isDateInPast(item.expiryDate) &&
-          isDateWithinDays(item.expiryDate, days)
-      );
-    }
-
-    return filteredItems;
+    
+    return result;
   }
 
   /**
    * Get item by ID
    */
   async getItemById(id) {
-    const items = await this.getItems();
+    const items = await readJsonFile(this.dataFile);
     const item = findItemById(items, id);
     return item ? this.recalculateExpiryDate(item) : null;
   }
@@ -136,7 +126,7 @@ class ItemService {
       source: itemData.source || null,
     };
 
-    const items = await this.getItems();
+    const items = readJsonFile(this.dataFile);
     items.push(newItem);
 
     // Save to file
@@ -150,7 +140,7 @@ class ItemService {
    * Update existing item
    */
   async updateItem(id, updateData) {
-    const items = await this.getItems();
+    const items = readJsonFile(this.dataFile);
     const itemIndex = items.findIndex((item) => item.id === id);
 
     if (itemIndex === -1) {
@@ -195,7 +185,7 @@ class ItemService {
    * Delete item
    */
   async deleteItem(id) {
-    const items = await this.getItems();
+    const items = readJsonFile(this.dataFile);
     const item = findItemById(items, id);
 
     if (!item) {

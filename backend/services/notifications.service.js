@@ -1,40 +1,18 @@
-import fs from "fs/promises";
 import { config } from "../config/index.js";
 import { generateId } from "../utils/date.util.js";
+import { readJsonFile, writeJsonFile } from "../utils/file.util.js";
 
 export class NotificationService {
   constructor() {
     this.dataFilePath = config.data.notificationsFilePath;
   }
 
-  /**
-   * Load notifications from file
-   */
-  async loadNotifications() {
-    try {
-      const data = await fs.readFile(this.dataFilePath, "utf8");
-      return JSON.parse(data);
-    } catch (error) {
-      // If file doesn't exist or is empty, return empty array
-      if (error.code === "ENOENT") {
-        return [];
-      }
-      throw error;
-    }
-  }
-
-  /**
-   * Save notifications to file
-   */
-  async saveNotifications(notifications) {
-    await fs.writeFile(this.dataFilePath, JSON.stringify(notifications, null, 2));
-  }
 
   /**
    * Get all notifications with optional filters
    */
   async getNotifications(filters = {}) {
-    const notifications = await this.loadNotifications();
+    const notifications = readJsonFile(this.dataFilePath);
     
     let filteredNotifications = [...notifications];
 
@@ -60,7 +38,7 @@ export class NotificationService {
    * Get a single notification by ID
    */
   async getNotificationById(id) {
-    const notifications = await this.loadNotifications();
+    const notifications = readJsonFile(this.dataFilePath);
     return notifications.find(notification => notification.id === id) || null;
   }
 
@@ -68,7 +46,7 @@ export class NotificationService {
    * Create a new notification
    */
   async createNotification(notificationData) {
-    const notifications = await this.loadNotifications();
+    const notifications = readJsonFile(this.dataFilePath);
     
     const notification = {
       id: generateId(),
@@ -80,7 +58,7 @@ export class NotificationService {
     };
 
     notifications.push(notification);
-    await this.saveNotifications(notifications);
+    writeJsonFile(this.dataFilePath, notifications);
     
     return notification;
   }
@@ -90,7 +68,7 @@ export class NotificationService {
    * Delete notifications by IDs
    */
   async deleteNotifications(ids) {
-    const notifications = await this.loadNotifications();
+    const notifications = readJsonFile(this.dataFilePath);
     const initialLength = notifications.length;
     
     // Filter out notifications with matching IDs
@@ -100,7 +78,7 @@ export class NotificationService {
     
     const deletedCount = initialLength - filteredNotifications.length;
     
-    await this.saveNotifications(filteredNotifications);
+    writeJsonFile(this.dataFilePath, filteredNotifications);
     
     return {
       success: true,
@@ -112,8 +90,30 @@ export class NotificationService {
   /**
    * Update existing notification
    */
-  async updateNotification(id, updateData) {
-    const notifications = await this.loadNotifications();
+  async updateNotification(id, updateData, readAll = false) {
+    const notifications = readJsonFile(this.dataFilePath);
+    
+    // Special case: if readAll is true, mark all as read
+    if (readAll && updateData.isRead !== undefined) {
+      let updatedCount = 0;
+      
+      for (let i = 0; i < notifications.length; i++) {
+        if (notifications[i].isRead !== updateData.isRead) {
+          notifications[i].isRead = updateData.isRead;
+          updatedCount++;
+        }
+      }
+  
+      writeJsonFile(this.dataFilePath, notifications);
+      
+      return {
+        success: true,
+        updatedCount,
+        message: `Updated ${updatedCount} notification(s)`
+      };
+    }
+    
+    // Normal single notification update
     const notificationIndex = notifications.findIndex(notification => notification.id === id);
 
     if (notificationIndex === -1) {
@@ -129,7 +129,7 @@ export class NotificationService {
     // Update notification with only allowed fields
     notifications[notificationIndex] = { ...notifications[notificationIndex], ...allowedUpdateData };
 
-    await this.saveNotifications(notifications);
+    writeJsonFile(this.dataFilePath, notifications);
     
     return notifications[notificationIndex];
   }
@@ -138,7 +138,7 @@ export class NotificationService {
    * Get notification statistics
    */
   async getNotificationStats() {
-    const notifications = await this.loadNotifications();
+    const notifications = readJsonFile(this.dataFilePath);
     
     const total = notifications.length;
     const unread = notifications.filter(n => !n.isRead).length;

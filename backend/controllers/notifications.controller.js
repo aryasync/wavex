@@ -159,7 +159,7 @@ export const deleteNotifications = async (req, res) => {
 export const updateNotification = async (req, res) => {
   try {
     const { id } = req.params;
-    const updateData = req.body;
+    const { readAll, ...updateData } = req.body;
 
     if (!id) {
       return res.status(400).json({
@@ -168,12 +168,12 @@ export const updateNotification = async (req, res) => {
       });
     }
 
-    const updatedNotification = await notificationService.updateNotification(id, updateData);
+    const updatedNotification = await notificationService.updateNotification(id, updateData, readAll);
 
     res.json({
       success: true,
       data: updatedNotification,
-      message: "Notification updated successfully"
+      message: readAll ? "All notifications updated successfully" : "Notification updated successfully"
     });
   } catch (error) {
     console.error("Error updating notification:", error);

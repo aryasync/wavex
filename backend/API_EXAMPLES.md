@@ -145,10 +145,19 @@ Content-Type: application/json
 
 ### Update Notification
 ```bash
+# Update single notification
 PUT /api/notifications/notif-123
 Content-Type: application/json
 {
   "isRead": true
+}
+
+# Mark all notifications as read
+PUT /api/notifications/any-id
+Content-Type: application/json
+{
+  "isRead": true,
+  "readAll": true
 }
 ```
 
