@@ -8,9 +8,10 @@ class ItemController {
   /**
    * Get all items
    */
-  async getAllItems(req, res) {
+  async getItemsByCategory(req, res) {
     try {
-      const items = await this.itemService.getAllItems();
+      const { category } = req.query;
+      const items = await this.itemService.getItemsByCategory(category);
       res.json(items);
     } catch (error) {
       console.error("Error getting all items:", error);
