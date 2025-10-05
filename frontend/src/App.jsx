@@ -135,7 +135,7 @@ function FridgePage() {
     });
   };
   return (
-    <DarkThemeLayout title="🧊 TSUNAMI FRIDGE TRACKER" onCameraClick={() => setIsCameraOpen(true)}>
+    <DarkThemeLayout title="WaveX" onCameraClick={() => setIsCameraOpen(true)}>
       {/* Pie Chart Section */}
       <FuturisticCard height="h-64">
         <div className="text-center mb-4 -mt-4">

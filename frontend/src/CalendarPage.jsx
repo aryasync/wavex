@@ -196,12 +196,25 @@ function CalendarPage() {
     return items.filter(item => item.expiryDate === dateString);
   };
 
+  // Calculate dynamic margin based on calendar height
+  const getDynamicMargin = () => {
+    const daysInMonth = getDaysInMonth(currentDate);
+    const firstDay = getFirstDayOfMonth(currentDate);
+    const weeksInMonth = Math.ceil((firstDay + daysInMonth) / 7);
+    
+    // Base margin + additional margin based on number of weeks
+    const baseMargin = 64; // mt-16 equivalent
+    const additionalMargin = (weeksInMonth - 4) * 24; // 24px per extra week
+    
+    return baseMargin + additionalMargin;
+  };
+
   return (
     <DarkThemeLayout title="PICK EXPIRATION DATE" onCameraClick={() => setIsCameraOpen(true)}>
       {/* Calendar Box */}
       <FuturisticCard height="h-80">
         {/* Month Navigation */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-6 mt-4">
           <FuturisticButton variant="secondary" size="icon" onClick={getPreviousMonth}>
             ‹
           </FuturisticButton>
@@ -254,7 +267,7 @@ function CalendarPage() {
           
           <FuturisticButton 
             variant="danger" 
-            className="px-8 py-3 text-lg font-semibold -ml-1"
+            className="px-8 py-3 text-lg font-semibold -ml-4"
             onClick={handleDenyAndManual}
           >
             DENY
@@ -289,7 +302,7 @@ function CalendarPage() {
 
       {/* Items for Selected Date (only show when not from confirmation) */}
       {!fromConfirmation && selectedDate && (
-        <div className="mt-6">
+        <div style={{ marginTop: `${getDynamicMargin()}px` }}>
           <h3 className="text-xl font-bold font-['Orbitron'] mb-4 text-center text-white">
             Items Expiring on {selectedDate.toLocaleDateString()}
           </h3>

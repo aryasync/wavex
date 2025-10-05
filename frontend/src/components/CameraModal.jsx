@@ -190,7 +190,7 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
 
         {/* Bottom overlay with controls */}
         <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/50 to-transparent">
-          <div className="flex justify-center items-center space-x-8">
+          <div className="flex justify-start items-center space-x-12 pl-16">
             {/* Gallery button */}
             <button 
               onClick={openImagePicker}
@@ -205,11 +205,6 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
               className="w-16 h-16 bg-white rounded-full border-4 border-white/30 flex items-center justify-center hover:bg-gray-100 transition-colors"
             >
               <div className="w-12 h-12 bg-white rounded-full"></div>
-            </button>
-            
-            {/* Flip camera button */}
-            <button className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-              <span className="text-white text-lg">🔄</span>
             </button>
           </div>
         </div>
