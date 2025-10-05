@@ -47,6 +47,7 @@ class ItemService {
       expiryDate: expiryDateString, // Calculated from purchasedDate + expiryPeriod
       purchasedDate: purchasedDate,
       category: data.category || "other",
+      createdAt: Math.floor(Date.now() / 1000), // Unix timestamp
     };
   }
 
