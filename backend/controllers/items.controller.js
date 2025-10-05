@@ -9,15 +9,25 @@ class ItemController {
   }
 
   /**
-   * Get all items
+   * Get items with flexible filtering
    */
-  async getItemsByCategory(req, res) {
+  async getItems(req, res) {
     try {
-      const { category } = req.query;
-      const items = await this.itemService.getItemsByCategory(category);
+      const { category, status, source, generatedBy, expired, expiring, expiringDays } = req.query;
+      
+      const filters = {};
+      if (category) filters.category = category;
+      if (status) filters.status = status;
+      if (source) filters.source = source;
+      if (generatedBy) filters.generatedBy = generatedBy;
+      if (expired === 'true') filters.expired = true;
+      if (expiring === 'true') filters.expiring = true;
+      if (expiringDays) filters.expiringDays = parseInt(expiringDays);
+      
+      const items = await this.itemService.getItems(filters);
       res.json(items);
     } catch (error) {
-      console.error("Error getting all items:", error);
+      console.error("Error getting items:", error);
       res.status(500).json({
         success: false,
         message: "Failed to retrieve items",
@@ -46,39 +56,6 @@ class ItemController {
       res.status(500).json({
         success: false,
         message: "Failed to retrieve item",
-      });
-    }
-  }
-
-  /**
-   * Get expiring items
-   */
-  async getExpiringItems(req, res) {
-    try {
-      const days = parseInt(req.query.days) || undefined;
-      const items = await this.itemService.getExpiringItems(days);
-      res.json(items);
-    } catch (error) {
-      console.error("Error getting expiring items:", error);
-      res.status(500).json({
-        success: false,
-        message: "Failed to retrieve expiring items",
-      });
-    }
-  }
-
-  /**
-   * Get expired items
-   */
-  async getExpiredItems(req, res) {
-    try {
-      const items = await this.itemService.getExpiredItems();
-      res.json(items);
-    } catch (error) {
-      console.error("Error getting expired items:", error);
-      res.status(500).json({
-        success: false,
-        message: "Failed to retrieve expired items",
       });
     }
   }
@@ -270,38 +247,6 @@ class ItemController {
       });
     }
   }
-
-  /**
-   * Get items by status
-   */
-  async getItemsByStatus(req, res) {
-    try {
-      const { status } = req.params;
-      
-      if (!status) {
-        return res.status(400).json({
-          success: false,
-          message: "Status parameter is required",
-        });
-      }
-
-      const items = await this.itemService.getItemsByStatus(status);
-      
-      res.json({
-        success: true,
-        items: items,
-        count: items.length,
-        status: status
-      });
-    } catch (error) {
-      console.error("Error fetching items by status:", error);
-      res.status(500).json({
-        success: false,
-        message: "Failed to fetch items by status",
-      });
-    }
-  }
-
 }
 
 export default ItemController;

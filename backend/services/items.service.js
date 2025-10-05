@@ -74,76 +74,68 @@ class ItemService {
   }
 
   /**
-   * Get all items
-   * @param {string} category - Optional category filter
+   * Get items with flexible filtering
+   * @param {Object} filters - Filter options
+   * @param {string} filters.category - Filter by category
+   * @param {string} filters.status - Filter by status
+   * @param {string} filters.source - Filter by source
+   * @param {string} filters.generatedBy - Filter by generatedBy
+   * @param {boolean} filters.expired - Filter for expired items
+   * @param {boolean} filters.expiring - Filter for expiring items
+   * @param {number} filters.expiringDays - Days for expiring filter
+   * @returns {Array} Filtered items
    */
-  async getItemsByCategory(category = null) {
+  async getItems(filters = {}) {
     const items = await readJsonFile(this.dataFile);
 
     // Recalculate expiry dates for all items
     const recalculatedItems = items.map(item => this.recalculateExpiryDate(item));
 
-    // If no category specified, return all items
-    if (!category) return recalculatedItems;
+    let filteredItems = recalculatedItems;
 
-    // Filter by category (case-insensitive)
-    return recalculatedItems.filter(
-      (item) =>
-        item.category && item.category.toLowerCase() === category.toLowerCase()
-    );
+    // Apply filters
+    if (filters.category) {
+      filteredItems = filteredItems.filter(
+        (item) =>
+          item.category && item.category.toLowerCase() === filters.category.toLowerCase()
+      );
+    }
+
+    if (filters.status) {
+      filteredItems = filteredItems.filter((item) => item.status === filters.status);
+    }
+
+    if (filters.source) {
+      filteredItems = filteredItems.filter((item) => item.source === filters.source);
+    }
+
+    if (filters.generatedBy) {
+      filteredItems = filteredItems.filter((item) => item.generatedBy === filters.generatedBy);
+    }
+
+    if (filters.expired) {
+      filteredItems = filteredItems.filter((item) => isDateInPast(item.expiryDate));
+    }
+
+    if (filters.expiring) {
+      const days = filters.expiringDays || config.business.expiryWarningDays;
+      filteredItems = filteredItems.filter(
+        (item) =>
+          !isDateInPast(item.expiryDate) &&
+          isDateWithinDays(item.expiryDate, days)
+      );
+    }
+
+    return filteredItems;
   }
 
   /**
    * Get item by ID
    */
   async getItemById(id) {
-    const items = await this.getItemsByCategory();
+    const items = await this.getItems();
     const item = findItemById(items, id);
     return item ? this.recalculateExpiryDate(item) : null;
-  }
-
-  /**
-   * Get items that are expiring soon
-   */
-  async getExpiringItems(days = config.business.expiryWarningDays) {
-    const items = await this.getItemsByCategory();
-    return items.filter(
-      (item) =>
-        !isDateInPast(item.expiryDate) &&
-        isDateWithinDays(item.expiryDate, days)
-    );
-  }
-
-  /**
-   * Get expired items
-   */
-  async getExpiredItems() {
-    const items = await this.getItemsByCategory();
-    return items.filter((item) => isDateInPast(item.expiryDate));
-  }
-
-  /**
-   * Get items by status
-   */
-  async getItemsByStatus(status) {
-    const items = await this.getItemsByCategory();
-    return items.filter((item) => item.status === status);
-  }
-
-  /**
-   * Get items by source
-   */
-  async getItemsBySource(source) {
-    const items = await this.getItemsByCategory();
-    return items.filter((item) => item.source === source);
-  }
-
-  /**
-   * Get items by generatedBy
-   */
-  async getItemsByGeneratedBy(generatedBy) {
-    const items = await this.getItemsByCategory();
-    return items.filter((item) => item.generatedBy === generatedBy);
   }
 
   /**
@@ -157,7 +149,7 @@ class ItemService {
     }
 
     const newItem = this.createItemData(itemData);
-    const items = await this.getItemsByCategory();
+    const items = await this.getItems();
     items.push(newItem);
 
     // Save to file
@@ -171,7 +163,7 @@ class ItemService {
    * Update existing item
    */
   async updateItem(id, updateData) {
-    const items = await this.getItemsByCategory();
+    const items = await this.getItems();
     const itemIndex = items.findIndex((item) => item.id === id);
 
     if (itemIndex === -1) {
@@ -200,7 +192,7 @@ class ItemService {
    * Delete item
    */
   async deleteItem(id) {
-    const items = await this.getItemsByCategory();
+    const items = await this.getItems();
     const item = findItemById(items, id);
 
     if (!item) {
