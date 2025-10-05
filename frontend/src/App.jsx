@@ -3,7 +3,6 @@ import ImageConfirmationPage from "./ImageConfirmationPage";
 import NewItemsConfirmationPage from "./NewItemsConfirmationPage";
 import CalendarPage from "./CalendarPage";
 import NotificationsPage from "./NotificationsPage";
-import ManualInputPage from "./ManualInputPage";
 import Home from "./Home";
 import DarkThemeLayout from "./components/DarkThemeLayout";
 import { ItemsProvider } from "./providers/ItemsProvider";
@@ -18,7 +17,6 @@ function App() {
       case '/': return 'home';
       case '/calendar': return 'calendar';
       case '/notifications': return 'notifications';
-      case '/manual-input': return 'manual-input';
       case '/image-confirmation': return 'image-confirmation';
       case '/new-items-confirmation': return 'new-items-confirmation';
       default: return 'home';
@@ -35,7 +33,6 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/notifications" element={<NotificationsPage />} />
-          <Route path="/manual-input" element={<ManualInputPage />} />
           <Route path="/image-confirmation" element={<ImageConfirmationPage />} />
           <Route path="/new-items-confirmation" element={<NewItemsConfirmationPage />} />
         </Routes>
