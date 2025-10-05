@@ -60,7 +60,7 @@ class AIService {
       const prompt = `Analyze this image of food items (either receipt or image of food items) and identify all visible food products. For each item, estimate:
 1. The name of the food item
 2. The category (${validCategories.join(', ')})
-3. The estimated expiry date based on the food's freshness and typical shelf life
+3. The estimated shelf life in days (expiryPeriod) based on the food's freshness and typical shelf life
 
 Consider factors like:
 - Freshness indicators (color, texture, packaging condition)
@@ -73,10 +73,11 @@ Return ONLY a JSON array of objects with this exact structure:
   {
     "name": "string",
     "category": "${categoryList}",
-    "expiryDate": "YYYY-MM-DD"
+    "expiryPeriod": 7
   }
 ]
 
+expiryPeriod should be a positive integer representing the number of days the item will stay fresh.
 If no food items are visible, return an empty array [].`;
 
       const response = await this.openai.chat.completions.create({
@@ -153,37 +154,30 @@ If no food items are visible, return an empty array [].`;
         );
       }
 
-      if (!item.expiryDate || typeof item.expiryDate !== "string") {
+      if (!item.expiryPeriod || typeof item.expiryPeriod !== "number") {
         throw new Error(
-          `Item ${index + 1}: expiryDate is required and must be a string`
+          `Item ${index + 1}: expiryPeriod is required and must be a number`
         );
       }
 
-      // Validate date format and range
-      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
-      if (!dateRegex.test(item.expiryDate)) {
+      // Validate expiryPeriod is a positive integer
+      if (!Number.isInteger(item.expiryPeriod) || item.expiryPeriod <= 0) {
         throw new Error(
-          `Item ${index + 1}: expiryDate must be in YYYY-MM-DD format`
+          `Item ${index + 1}: expiryPeriod must be a positive integer`
         );
       }
 
-      const expiryDate = new Date(item.expiryDate);
-      if (isNaN(expiryDate.getTime())) {
-        throw new Error(`Item ${index + 1}: invalid date format`);
-      }
-
-      if (expiryDate > maxFutureDate) {
+      // Validate expiryPeriod is reasonable (max 365 days)
+      if (item.expiryPeriod > 365) {
         throw new Error(
-          `Item ${
-            index + 1
-          }: expiry date cannot be more than 1 year in the future`
+          `Item ${index + 1}: expiryPeriod cannot be more than 365 days`
         );
       }
 
       return {
         name: item.name.trim(),
         category: item.category,
-        expiryDate: item.expiryDate,
+        expiryPeriod: item.expiryPeriod,
       };
     });
 

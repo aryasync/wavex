@@ -28,13 +28,13 @@ class ItemService {
       errors.push("Name is required and must be a string");
     }
 
-    if (!item.expiryDate || typeof item.expiryDate !== "string") {
-      errors.push("Expiry date is required and must be a string");
+    if (!item.expiryPeriod || typeof item.expiryPeriod !== "number") {
+      errors.push("Expiry period is required and must be a number");
     }
 
-    // Check date format (YYYY-MM-DD)
-    if (item.expiryDate && !/^\d{4}-\d{2}-\d{2}$/.test(item.expiryDate)) {
-      errors.push("Expiry date must be in YYYY-MM-DD format");
+    // Check expiryPeriod is a positive integer
+    if (item.expiryPeriod && (!Number.isInteger(item.expiryPeriod) || item.expiryPeriod <= 0)) {
+      errors.push("Expiry period must be a positive integer");
     }
 
     // Check category if provided
@@ -54,14 +54,40 @@ class ItemService {
    */
   createItemData(data) {
     const now = new Date().toISOString().split("T")[0]; // Today's date in YYYY-MM-DD
+    const addedDate = data.addedDate || now;
+    
+    // Calculate expiry date by adding expiryPeriod to addedDate
+    const expiryDate = new Date(addedDate);
+    expiryDate.setDate(expiryDate.getDate() + data.expiryPeriod);
+    const expiryDateString = expiryDate.toISOString().split("T")[0];
 
     return {
       id: generateId(),
       name: data.name,
-      expiryDate: data.expiryDate,
-      addedDate: data.addedDate || now,
+      expiryPeriod: data.expiryPeriod,
+      expiryDate: expiryDateString, // Calculated from addedDate + expiryPeriod
+      addedDate: addedDate,
       category: data.category || "other",
     };
+  }
+
+  /**
+   * Calculate expiry date from addedDate and expiryPeriod
+   */
+  calculateExpiryDate(addedDate, expiryPeriod) {
+    const expiryDate = new Date(addedDate);
+    expiryDate.setDate(expiryDate.getDate() + expiryPeriod);
+    return expiryDate.toISOString().split("T")[0];
+  }
+
+  /**
+   * Recalculate expiry date for an item
+   */
+  recalculateExpiryDate(item) {
+    if (item.expiryPeriod && item.addedDate) {
+      item.expiryDate = this.calculateExpiryDate(item.addedDate, item.expiryPeriod);
+    }
+    return item;
   }
 
   /**
@@ -71,11 +97,14 @@ class ItemService {
   async getItemsByCategory(category = null) {
     const items = await readJsonFile(this.dataFile);
 
+    // Recalculate expiry dates for all items
+    const recalculatedItems = items.map(item => this.recalculateExpiryDate(item));
+
     // If no category specified, return all items
-    if (!category) return items;
+    if (!category) return recalculatedItems;
 
     // Filter by category (case-insensitive)
-    return items.filter(
+    return recalculatedItems.filter(
       (item) =>
         item.category && item.category.toLowerCase() === category.toLowerCase()
     );
@@ -86,7 +115,8 @@ class ItemService {
    */
   async getItemById(id) {
     const items = await this.getItemsByCategory();
-    return findItemById(items, id);
+    const item = findItemById(items, id);
+    return item ? this.recalculateExpiryDate(item) : null;
   }
 
   /**
