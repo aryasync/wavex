@@ -19,6 +19,16 @@ const NotificationItem = ({ notification, onMarkAsRead, onDelete }) => {
   };
 
   const formatDate = (timestamp) => {
+    // Handle invalid or missing timestamps
+    if (!timestamp || isNaN(timestamp)) {
+      return 'Invalid date';
+    }
+    
+    // If timestamp is in seconds (Unix timestamp), convert to milliseconds
+    if (timestamp < 10000000000) {
+      timestamp = timestamp * 1000;
+    }
+    
     return new Date(timestamp).toLocaleString();
   };
 
