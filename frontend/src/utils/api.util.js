@@ -2,8 +2,7 @@
  * API utility functions for backend communication
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 
-  (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://wavex-4lnx.onrender.com/api');
+import { API_BASE_URL } from '../config/api.js';
 
 /**
  * Generic API request handler with improved error handling

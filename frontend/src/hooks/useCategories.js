@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config/api.js';
 
 /**
  * Custom hook for managing categories from backend config
@@ -23,7 +24,7 @@ export const useCategories = () => {
       setLoading(true);
       setError(null);
       
-      const response = await fetch('http://localhost:3001/api/items/categories');
+      const response = await fetch(`${API_BASE_URL}/items/categories`);
       if (response.ok) {
         const data = await response.json();
         if (data.success) {

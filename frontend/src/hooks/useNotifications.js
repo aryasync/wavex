@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config/api.js';
 
 /**
  * Custom hook for managing notifications
@@ -16,7 +17,7 @@ export const useNotifications = () => {
       setError(null);
 
       // Fetch notifications
-      const notificationsResponse = await fetch('http://localhost:3001/api/notifications');
+      const notificationsResponse = await fetch(`${API_BASE_URL}/notifications`);
       if (!notificationsResponse.ok) {
         throw new Error('Failed to fetch notifications');
       }
@@ -24,7 +25,7 @@ export const useNotifications = () => {
       setNotifications(notificationsData.data || []);
 
       // Fetch scheduler status
-      const schedulerResponse = await fetch('http://localhost:3001/api/notifications/scheduler/status');
+      const schedulerResponse = await fetch(`${API_BASE_URL}/notifications/scheduler/status`);
       if (schedulerResponse.ok) {
         const schedulerData = await schedulerResponse.json();
         setSchedulerStatus(schedulerData.data);
@@ -45,7 +46,7 @@ export const useNotifications = () => {
   // Mark notification as read
   const markAsRead = async (notificationId) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/notifications/${notificationId}`, {
+      const response = await fetch(`${API_BASE_URL}/notifications/${notificationId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isRead: true }),
@@ -68,7 +69,7 @@ export const useNotifications = () => {
   // Delete notification
   const deleteNotification = async (notificationId) => {
     try {
-      const response = await fetch('http://localhost:3001/api/notifications', {
+      const response = await fetch(`${API_BASE_URL}/notifications`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids: [notificationId] }),
@@ -108,7 +109,7 @@ export const useNotifications = () => {
       if (notifications.length === 0) return { success: true, count: 0 };
 
       const allIds = notifications.map(n => n.id);
-      const response = await fetch('http://localhost:3001/api/notifications', {
+      const response = await fetch(`${API_BASE_URL}/notifications`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ids: allIds }),
@@ -129,7 +130,7 @@ export const useNotifications = () => {
   // Trigger scheduler
   const triggerScheduler = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/notifications/check', {
+      const response = await fetch(`${API_BASE_URL}/notifications/check`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });
