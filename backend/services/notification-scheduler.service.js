@@ -1,6 +1,6 @@
 import cron from 'node-cron';
 import { NotificationService } from './notifications.service.js';
-import { ItemService } from './items.service.js';
+import ItemService from './items.service.js';
 import { isDateInPast, isDateWithinDays, getDaysUntilExpiry } from '../utils/date.util.js';
 
 export class NotificationSchedulerService {

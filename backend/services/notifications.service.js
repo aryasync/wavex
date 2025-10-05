@@ -1,5 +1,5 @@
 import { config } from "../config/index.js";
-import { generateId } from "../utils/date.util.js";
+import { generateId } from "../utils/file.util.js";
 import { readJsonFile, writeJsonFile } from "../utils/file.util.js";
 
 export class NotificationService {
