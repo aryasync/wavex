@@ -10,18 +10,23 @@ export const config = {
   // Data configuration
   data: {
     filePath: path.join(process.cwd(), "data", "items.data.json"),
+    notificationsFilePath: path.join(process.cwd(), "data", "notifications.data.json"),
   },
 
   // Business logic constants
   business: {
     expiryWarningDays: 3, // Warn 3 days before expiry
     maxItemsPerUser: 100,
+
+    maxExpiryPeriod: 365,
     validCategories: ["dairy", "meat", "produce", "pantry", "other"],
     validStatuses: ["pending", "confirmed"],
     validGeneratedBy: ["manual", "ai"],
     validSources: ["receipt", "groceries"],
+    
+    // Notification configuration
+    validNotificationTypes: ["item_expiry_warning", "added_items", "item_expired"],
 
-    // Fields that users are allowed to update
     // Note: expiryDate is calculated automatically from purchasedDate + expiryPeriod
     itemsUpdatableFields: [
       "name",
@@ -31,13 +36,9 @@ export const config = {
       "status",
     ],
 
-    // TODO: Notification fields (when implemented)
-    // notificationUpdatableFields: [
-    //   "title",
-    //   "message",
-    //   "isRead",
-    //   "priority"
-    // ]
+    notificationUpdatableFields: [
+      "isRead",
+    ]
   },
 
   API_Key: process.env.OPENAI_API_KEY,

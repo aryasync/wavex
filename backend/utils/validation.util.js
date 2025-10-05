@@ -76,8 +76,8 @@ export class ItemValidator {
         item.expiryPeriod <= 0
       ) {
         addError("Expiry period must be a positive integer");
-      } else if (item.expiryPeriod > 365) {
-        addError("Expiry period cannot be more than 365 days");
+      } else if (item.expiryPeriod > config.business.maxExpiryPeriod) {
+        addError(`Expiry period cannot be more than ${config.business.maxExpiryPeriod} days`);
       }
     }  
 
