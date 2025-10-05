@@ -1,8 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const CameraModal = ({ isOpen, onClose, onCapture }) => {
-  const navigate = useNavigate();
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -165,16 +163,6 @@ const CameraModal = ({ isOpen, onClose, onCapture }) => {
                   📷
                 </button>
               )}
-              <button
-                onClick={() => {
-                  stopCamera();
-                  navigate('/manual-input');
-                }}
-                className="text-white text-lg hover:text-gray-300"
-                title="Manual input"
-              >
-                ✏️
-              </button>
               <button
                 onClick={() => {
                   stopCamera();
