@@ -38,7 +38,7 @@ class ItemService {
     }
 
     // Check category if provided
-    const validCategories = config.business.categories;
+    const validCategories = config.business.supportedCategories;
     if (item.category && !validCategories.includes(item.category)) {
       errors.push(`Category must be one of: ${validCategories.join(", ")}`);
     }
@@ -61,7 +61,6 @@ class ItemService {
       expiryDate: data.expiryDate,
       addedDate: data.addedDate || now,
       category: data.category || "other",
-      quantity: data.quantity || "1",
     };
   }
 

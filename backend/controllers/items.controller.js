@@ -1,8 +1,10 @@
 import ItemService from "../services/items.service.js";
+import AIService from "../services/ai.service.js";
 
 class ItemController {
   constructor() {
     this.itemService = new ItemService();
+    this.aiService = new AIService();
   }
 
   /**
@@ -166,6 +168,98 @@ class ItemController {
       res.status(500).json({
         success: false,
         message: "Failed to delete item",
+      });
+    }
+  }
+
+  /**
+   * Analyze image with AI and create items
+   */
+  async analyzeImage(req, res) {
+    try {
+      // Check if image file was uploaded
+      if (!req.file) {
+        return res.status(400).json({
+          success: false,
+          message: "No image file provided",
+        });
+      }
+
+      // Analyze image with AI
+      const aiResponse = await this.aiService.analyzeImage(req.file.buffer);
+      
+      if (aiResponse.length === 0) {
+        return res.json({
+          success: true,
+          message: "No food items detected in the image",
+          items: [],
+          createdCount: 0
+        });
+      }
+
+      // Create items from AI response
+      const createdItems = [];
+      const errors = [];
+
+      for (const itemData of aiResponse) {
+        try {
+          const newItem = await this.itemService.createItem(itemData);
+          createdItems.push(newItem);
+        } catch (error) {
+          console.error(`Error creating item ${itemData.name}:`, error);
+          errors.push({
+            item: itemData,
+            error: error.message            
+          });
+        }
+      }
+
+      // Return response
+      const response = {
+        success: true,
+        message: `Successfully analyzed image and created ${createdItems.length} items`,
+        items: createdItems,
+        createdCount: createdItems.length,
+        totalDetected: aiResponse.length,
+        aiResponse: aiResponse // TODO remove this
+      };
+
+      // Include errors if any
+      if (errors.length > 0) {
+        response.errors = errors;
+        response.message += ` (${errors.length} items failed to create)`;
+      }
+
+      res.status(201).json(response);
+
+    } catch (error) {
+      console.error("Error analyzing image:", error);
+
+      // Handle specific error types
+      if (error.message.includes('API key')) {
+        return res.status(500).json({
+          success: false,
+          message: "AI service not configured. Please set OPENAI_API_KEY environment variable.",
+        });
+      }
+
+      if (error.message.includes('Image processing')) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid image file. Please upload a valid image.",
+        });
+      }
+
+      if (error.message.includes('AI analysis failed')) {
+        return res.status(500).json({
+          success: false,
+          message: "Failed to analyze image. Please try again.",
+        });
+      }
+
+      res.status(500).json({
+        success: false,
+        message: "Failed to analyze image",
       });
     }
   }

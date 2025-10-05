@@ -20,10 +20,12 @@ export const config = {
       "dairy", 
       "meat", 
       "produce", 
-      "beverages", 
+      "pantry", 
       "other"
     ]
   },
+
+  API_Key: process.env.OPENAI_API_KEY,
   
   // API configuration
   api: {

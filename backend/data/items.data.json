@@ -4,47 +4,167 @@
     "name": "Appkjfdsjfdjhkles",
     "expiryDate": "2025-10-07",
     "addedDate": "2025-10-04",
-    "category": "fruits",
-    "quantity": "1"
+    "category": "fruits"
   },
   {
     "id": "1703123456789",
     "name": "Milk",
     "expiryDate": "2025-01-15",
     "addedDate": "2025-01-10",
-    "category": "dairy",
-    "quantity": "1"
+    "category": "dairy"
   },
   {
     "id": "1703123456790",
     "name": "Bread",
     "expiryDate": "2025-01-12",
     "addedDate": "2025-01-10",
-    "category": "other",
-    "quantity": "1"
+    "category": "other"
   },
   {
     "id": "1c1a8b6dd54282c182c09a9552bfb3bf",
     "name": "Apples",
     "expiryDate": "2025-01-20",
     "addedDate": "2025-10-04",
-    "category": "fruits",
-    "quantity": "1"
+    "category": "fruits"
   },
   {
     "id": "54a07b657b86e7679423450d58fadd2a",
     "name": "Apples",
     "expiryDate": "2025-01-20",
     "addedDate": "2025-10-04",
-    "category": "fruits",
-    "quantity": "1"
+    "category": "fruits"
   },
   {
     "id": "429c14aa78f6ae2d4d834237e0376304",
     "name": "sds",
     "expiryDate": "2025-01-20",
     "addedDate": "2025-10-04",
-    "category": "other",
-    "quantity": "1"
+    "category": "other"
+  },
+  {
+    "id": "02cf1ac7806a10745e842959eec6e9e8",
+    "name": "Aroy D Coconut Milk",
+    "expiryDate": "2025-10-04",
+    "addedDate": "2025-10-05",
+    "category": "other"
+  },
+  {
+    "id": "d73f2c9c02f6803b445e23448cc16a87",
+    "name": "Aroy D Coconut Milk",
+    "expiryDate": "2025-10-04",
+    "addedDate": "2025-10-05",
+    "category": "other"
+  },
+  {
+    "id": "4a30df21f674175849658c4ac26ec646",
+    "name": "Coconut Milk",
+    "expiryDate": "2025-10-04",
+    "addedDate": "2025-10-05",
+    "category": "other"
+  },
+  {
+    "id": "5a6923dcf6b4107d94d0fba598333320",
+    "name": "Bananas",
+    "expiryDate": "2023-10-10",
+    "addedDate": "2025-10-05",
+    "category": "produce"
+  },
+  {
+    "id": "b8e02e6760a3b1ffb7a3f0b865b97c2b",
+    "name": "Cajun Chicken",
+    "expiryDate": "2023-10-10",
+    "addedDate": "2025-10-05",
+    "category": "meat"
+  },
+  {
+    "id": "1c4458d60d618e78b60860baa8336e3e",
+    "name": "Croissant",
+    "expiryDate": "2023-10-07",
+    "addedDate": "2025-10-05",
+    "category": "other"
+  },
+  {
+    "id": "fe5231b86fa5c3cfdb95bab61c15a1ba",
+    "name": "Rice Stick",
+    "expiryDate": "2025-10-04",
+    "addedDate": "2025-10-05",
+    "category": "other"
+  },
+  {
+    "id": "3bc730447da2675b966aefef17385a0e",
+    "name": "Ground Chicken",
+    "expiryDate": "2023-10-10",
+    "addedDate": "2025-10-05",
+    "category": "meat"
+  },
+  {
+    "id": "911f26a8c2c24a55dd5debc3efe988cf",
+    "name": "Eggplant",
+    "expiryDate": "2023-10-10",
+    "addedDate": "2025-10-05",
+    "category": "produce"
+  },
+  {
+    "id": "6f60c380d5d8630131f8acc536a5f652",
+    "name": "Paneer",
+    "expiryDate": "2023-10-10",
+    "addedDate": "2025-10-05",
+    "category": "dairy"
+  },
+  {
+    "id": "0697a6bb3a78747459fddbb7b9b46715",
+    "name": "Cheese",
+    "expiryDate": "2025-10-04",
+    "addedDate": "2025-10-05",
+    "category": "dairy"
+  },
+  {
+    "id": "fdb2ae16321cbe39f89a5ff206c01ee5",
+    "name": "Garlic Baguette",
+    "expiryDate": "2023-10-07",
+    "addedDate": "2025-10-05",
+    "category": "other"
+  },
+  {
+    "id": "3cb39f68a23008ec4272a6710c3ec206",
+    "name": "Gluten Free Bread",
+    "expiryDate": "2023-10-07",
+    "addedDate": "2025-10-05",
+    "category": "other"
+  },
+  {
+    "id": "e330a55a8f34df96a9b299239ac07b4f",
+    "name": "Greek Yogurt",
+    "expiryDate": "2023-10-10",
+    "addedDate": "2025-10-05",
+    "category": "dairy"
+  },
+  {
+    "id": "c8e82385ddbc8fae921c813db150824e",
+    "name": "Hummus",
+    "expiryDate": "2023-10-10",
+    "addedDate": "2025-10-05",
+    "category": "other"
+  },
+  {
+    "id": "37f07a09b1ab90682e40d76f295478cd",
+    "name": "Eggs",
+    "expiryDate": "2023-10-10",
+    "addedDate": "2025-10-05",
+    "category": "dairy"
+  },
+  {
+    "id": "813ee158469e1f8911cdd6bd1d171199",
+    "name": "Marble Cheddar",
+    "expiryDate": "2025-10-04",
+    "addedDate": "2025-10-05",
+    "category": "dairy"
+  },
+  {
+    "id": "c681a157b0d828b049075b3d232e8bbf",
+    "name": "Kaiser Bun",
+    "expiryDate": "2023-10-07",
+    "addedDate": "2025-10-05",
+    "category": "other"
   }
 ]
