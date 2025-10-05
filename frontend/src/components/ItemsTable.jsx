@@ -1,3 +1,5 @@
+import { calculateDaysUntilExpiry } from "../utils/item.util";
+
 const ItemsTable = ({ 
   headers = [], 
   data = [], 
@@ -6,14 +8,6 @@ const ItemsTable = ({
   emptyMessage = "No data available",
   className = "" 
 }) => {
-  // Calculate days to expire for an item
-  const getDaysToExpire = (expiryDate) => {
-    const today = new Date();
-    const expiry = new Date(expiryDate);
-    const diffTime = expiry - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
 
   // Get background color based on days to expire
   const getExpiryBackgroundColor = (days) => {
@@ -37,7 +31,7 @@ const ItemsTable = ({
       <span className="font-medium text-white">{item.name}</span>
     ),
     daysToExpire: (item) => {
-      const days = getDaysToExpire(item.expiryDate);
+      const days = calculateDaysUntilExpiry(item.expiryDate);
       return (
         <span className={`font-medium ${getExpiryTextColor(days)}`}>
           {days < 0 ? `Expired ${Math.abs(days)} days ago` : 
@@ -87,7 +81,7 @@ const ItemsTable = ({
       <div className="space-y-1">
         {transformedData.map((row, index) => {
           const item = items[index];
-          const days = getDaysToExpire(item.expiryDate);
+          const days = calculateDaysUntilExpiry(item.expiryDate);
           const backgroundClass = getExpiryBackgroundColor(days);
           
           return (

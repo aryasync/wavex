@@ -5,9 +5,9 @@
 const API_BASE_URL = 'http://localhost:3001/api';
 
 /**
- * Generic API request handler
+ * Generic API request handler with improved error handling
  */
-export const apiRequest = async (endpoint, options = {}) => {
+const makeApiRequest = async (endpoint, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
   const defaultOptions = {
     headers: {
@@ -15,54 +15,74 @@ export const apiRequest = async (endpoint, options = {}) => {
     },
   };
 
-  const response = await fetch(url, { ...defaultOptions, ...options });
-  
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  try {
+    const response = await fetch(url, { ...defaultOptions, ...options });
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
+  } catch (error) {
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      throw new Error('Network error: Unable to connect to server');
+    }
+    throw error;
   }
-
-  return response.json();
 };
 
 /**
- * Get all items from backend
+ * Items API endpoints
  */
-export const fetchItems = async () => {
-  return apiRequest('/items');
+export const itemsApi = {
+  /**
+   * Get all items from backend
+   */
+  getAll: async () => {
+    return makeApiRequest('/items');
+  },
+
+  /**
+   * Get item by ID from backend
+   */
+  getById: async (id) => {
+    return makeApiRequest(`/items/${id}`);
+  },
+
+  /**
+   * Create new item in backend
+   */
+  create: async (itemData) => {
+    return makeApiRequest('/items', {
+      method: 'POST',
+      body: JSON.stringify(itemData),
+    });
+  },
+
+  /**
+   * Update item in backend
+   */
+  update: async (id, updateData) => {
+    return makeApiRequest(`/items/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(updateData),
+    });
+  },
+
+  /**
+   * Delete item from backend
+   */
+  delete: async (id) => {
+    return makeApiRequest(`/items/${id}`, {
+      method: 'DELETE',
+    });
+  }
 };
 
-/**
- * Get item by ID from backend
- */
-export const fetchItemById = async (id) => {
-  return apiRequest(`/items/${id}`);
-};
-
-/**
- * Create new item in backend
- */
-export const createItem = async (itemData) => {
-  return apiRequest('/items', {
-    method: 'POST',
-    body: JSON.stringify(itemData),
-  });
-};
-
-/**
- * Update item in backend
- */
-export const updateItem = async (id, updateData) => {
-  return apiRequest(`/items/${id}`, {
-    method: 'PUT',
-    body: JSON.stringify(updateData),
-  });
-};
-
-/**
- * Delete item from backend
- */
-export const deleteItem = async (id) => {
-  return apiRequest(`/items/${id}`, {
-    method: 'DELETE',
-  });
-};
+// Legacy exports for backward compatibility
+export const fetchItems = itemsApi.getAll;
+export const fetchItemById = itemsApi.getById;
+export const createItem = itemsApi.create;
+export const updateItem = itemsApi.update;
+export const deleteItem = itemsApi.delete;

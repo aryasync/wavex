@@ -55,3 +55,25 @@ export const transformFrontendItem = (frontendItem) => ({
   generatedBy: "manual",
   source: null
 });
+
+/**
+ * Calculate days until expiry for an item
+ */
+export const calculateDaysUntilExpiry = (expiryDate) => {
+  const today = new Date();
+  const expiry = new Date(expiryDate);
+  const diffTime = expiry - today;
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+};
+
+/**
+ * Get expiry status for an item
+ */
+export const getExpiryStatus = (expiryDate) => {
+  const days = calculateDaysUntilExpiry(expiryDate);
+  
+  if (days < 0) return { status: 'expired', color: 'red' };
+  if (days <= 3) return { status: 'expiring_soon', color: 'orange' };
+  if (days <= 7) return { status: 'expiring_this_week', color: 'yellow' };
+  return { status: 'good', color: 'green' };
+};

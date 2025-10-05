@@ -3,7 +3,7 @@ import ImageConfirmationPage from "./ImageConfirmationPage";
 import CalendarPage from "./CalendarPage";
 import NotificationsPage from "./NotificationsPage";
 import ManualInputPage from "./ManualInputPage";
-import FridgePage from "./pages/FridgePage";
+import Home from "./Home";
 import DarkThemeLayout from "./components/DarkThemeLayout";
 import { ItemsProvider } from "./providers/ItemsProvider";
 
@@ -30,7 +30,7 @@ function App() {
         currentPage={getCurrentPage()}
       >
         <Routes>
-          <Route path="/" element={<FridgePage />} />
+          <Route path="/" element={<Home />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/manual-input" element={<ManualInputPage />} />

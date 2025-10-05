@@ -1,16 +1,16 @@
 import { useState, useMemo } from "react";
-import FuturisticButton from "../components/FuturisticButton";
-import ItemsTable from "../components/ItemsTable";
-import RingPieChart from "../components/RingPieChart";
-import SectionCard from "../components/SectionCard";
-import { useItems } from "../contexts/ItemsContext";
-import { useCategories } from "../hooks/useCategories";
+import FuturisticButton from "./components/FuturisticButton";
+import ItemsTable from "./components/ItemsTable";
+import RingPieChart from "./components/RingPieChart";
+import SectionCard from "./components/SectionCard";
+import { useItems } from "./contexts/ItemsContext";
+import { useCategories } from "./hooks/useCategories";
 
 /**
- * FridgePage Component
+ * Home Component
  * Main page displaying inventory overview and items list
  */
-function FridgePage() {
+function Home() {
   const { items, loading, error, refetchItems } = useItems();
   const {
     categories,
@@ -122,4 +122,4 @@ function FridgePage() {
   );
 }
 
-export default FridgePage;
+export default Home;
