@@ -14,6 +14,7 @@ app.use(cors({
     'https://wavex-xi.vercel.app/', // Replace with your actual Vercel URL
     'https://*.vercel.app' // Allow all Vercel subdomains
   ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
 app.use(express.json());
