@@ -1,19 +1,30 @@
 import { useState, useEffect } from "react";
-import { Routes, Route, Link } from "react-router-dom";
-import AboutPage from "./AboutPage";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
 import CategoryPage from "./CategoryPage";
+import ImageConfirmationPage from "./ImageConfirmationPage";
+import CalendarPage from "./CalendarPage";
 import PageContainer from "./components/PageContainer";
 import Header from "./components/Header";
 import Button from "./components/Button";
 import ItemList from "./components/ItemList";
-import PieChart from "./components/PieChart";
+import HorizontalBarChart from "./components/HorizontalBarChart";
 import CameraModal from "./components/CameraModal";
+import DarkThemeLayout from "./components/DarkThemeLayout";
+import FuturisticCard from "./components/FuturisticCard";
+import FuturisticButton from "./components/FuturisticButton";
+import FuturisticTable from "./components/FuturisticTable";
 
 function FridgePage() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleImageCapture = (imageData) => {
+    setIsCameraOpen(false);
+    navigate('/image-confirmation', { state: { imageData } });
+  };
 
   const fetchItems = async () => {
     try {
@@ -40,76 +51,60 @@ function FridgePage() {
     fetchItems();
   }, []);
   return (
-    <PageContainer>
-      <Header title="🧊 Tsunami Fridge Tracker" />
-      
+    <DarkThemeLayout title="🧊 TSUNAMI FRIDGE TRACKER" onCameraClick={() => setIsCameraOpen(true)}>
       {/* Pie Chart Section */}
-      <div className="mb-6">
-        <PieChart />
-      </div>
+      <FuturisticCard height="h-64">
+        <div className="text-center mb-4">
+          <h2 className="text-xl font-semibold text-white font-['Orbitron'] mb-4">Inventory Overview</h2>
+          <HorizontalBarChart />
+        </div>
+      </FuturisticCard>
       
-      <div className="mb-6">
-        <Link to="/about" className="block">
-          <Button variant="success" className="w-full">
-            About
-          </Button>
-        </Link>
-      </div>
 
-      <div className="flex-1 overflow-y-auto pb-20">
+      {/* Items Section */}
+      <div className="mt-20">
+        <h3 className="text-xl font-bold font-['Orbitron'] mb-6 text-center">Items</h3>
+        
         {loading && (
-          <div className="flex justify-center items-center py-8">
-            <div className="text-gray-500">Loading items...</div>
+          <div className="text-center py-8 text-white/60">
+            <p>Loading items...</p>
           </div>
         )}
         
         {error && (
-          <div className="flex flex-col items-center py-8">
-            <div className="text-red-500 mb-4">Error: {error}</div>
-            <Button variant="primary" onClick={fetchItems}>
+          <div className="text-center py-8">
+            <p className="text-red-400 mb-4">Error: {error}</p>
+            <FuturisticButton variant="primary" onClick={fetchItems}>
               Retry
-            </Button>
+            </FuturisticButton>
           </div>
         )}
         
         {!loading && !error && (
-          <ItemList items={items} />
+          <FuturisticTable
+            headers={["Product", "Category", "Expiration"]}
+            data={items.map(item => [
+              { content: (
+                <div className="flex items-center space-x-2">
+                  <span className="text-lg">{item.icon || "📦"}</span>
+                  <span>{item.name}</span>
+                </div>
+              )},
+              { content: item.category, className: "text-white/70" },
+              { content: item.expiryDate, className: "text-red-400" }
+            ])}
+            emptyMessage="No items in your fridge yet"
+          />
         )}
-        
-        {/* Extending border that grows with content - longer */}
-        <div className="border-t border-gray-200 h-32"></div>
-      </div>
-
-      {/* Bottom navigation bar with divider */}
-      <div className="border-t border-gray-200 bg-white fixed bottom-0 left-0 right-0 z-10">
-        <div className="flex py-3 px-2 max-w-md mx-auto">
-          <div className="flex-1 flex justify-center">
-            <Button variant="icon" className="rounded-xl w-12 h-12 flex items-center justify-center" icon="🏠">
-            </Button>
-          </div>
-          <div className="flex-1 flex justify-center">
-            <button onClick={() => setIsCameraOpen(true)}>
-              <Button variant="icon" className="rounded-xl w-12 h-12 flex items-center justify-center" icon="📷">
-              </Button>
-            </button>
-          </div>
-          <div className="flex-1 flex justify-center">
-            <Button variant="icon" className="rounded-xl w-12 h-12 flex items-center justify-center" icon="📅">
-            </Button>
-          </div>
-          <div className="flex-1 flex justify-center">
-            <Button variant="icon" className="rounded-xl w-12 h-12 flex items-center justify-center" icon="🔔">
-            </Button>
-          </div>
-        </div>
       </div>
 
       {/* Camera Modal */}
       <CameraModal 
         isOpen={isCameraOpen} 
-        onClose={() => setIsCameraOpen(false)} 
+        onClose={() => setIsCameraOpen(false)}
+        onCapture={handleImageCapture}
       />
-    </PageContainer>
+    </DarkThemeLayout>
   );
 }
 
@@ -117,7 +112,8 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<FridgePage />} />
-      <Route path="/about" element={<AboutPage />} />
+      <Route path="/calendar" element={<CalendarPage />} />
+      <Route path="/image-confirmation" element={<ImageConfirmationPage />} />
       <Route path="/category/fruits" element={<CategoryPage categoryName="Fruits" categoryColor="#3B82F6" categoryIcon="🍎" />} />
       <Route path="/category/vegetables" element={<CategoryPage categoryName="Vegetables" categoryColor="#10B981" categoryIcon="🥕" />} />
       <Route path="/category/dairy" element={<CategoryPage categoryName="Dairy" categoryColor="#F59E0B" categoryIcon="🥛" />} />
