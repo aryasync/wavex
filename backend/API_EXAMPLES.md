@@ -73,12 +73,15 @@ Content-Type: application/json
   "expiryPeriod": 7
 }
 
-# Update item
+# Update item (only these fields can be updated)
 PUT /api/items/123
 Content-Type: application/json
 {
   "status": "confirmed",
-  "name": "Fresh Milk"
+  "name": "Fresh Milk",
+  "category": "dairy",
+  "expiryPeriod": 10,
+  "purchasedDate": "2024-01-15"
 }
 
 # Delete item

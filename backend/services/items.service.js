@@ -170,14 +170,30 @@ class ItemService {
       throw new Error("Item not found");
     }
 
+    // Whitelist approach: Only allow specific fields to be updated
+    const allowedFields = config.business.itemsUpdatableFields;
+    const allowedUpdateData = Object.fromEntries(
+      Object.entries(updateData).filter(([key]) => allowedFields.includes(key))
+    );
+
     // Validate update data
-    const validation = this.validateItem(updateData);
+    const validation = this.validateItem(allowedUpdateData);
     if (!validation.isValid) {
       throw new Error(`Validation failed: ${validation.errors.join(", ")}`);
     }
 
-    // Update item
-    items[itemIndex] = { ...items[itemIndex], ...updateData };
+    // Update item with only allowed fields
+    items[itemIndex] = { ...items[itemIndex], ...allowedUpdateData };
+
+    // Auto-recalculate expiryDate if purchasedDate or expiryPeriod changed
+    if (allowedUpdateData.purchasedDate || allowedUpdateData.expiryPeriod) {
+      const purchasedDate = allowedUpdateData.purchasedDate || items[itemIndex].purchasedDate;
+      const expiryPeriod = allowedUpdateData.expiryPeriod || items[itemIndex].expiryPeriod;
+      
+      if (purchasedDate && expiryPeriod) {
+        items[itemIndex].expiryDate = this.calculateExpiryDate(purchasedDate, expiryPeriod);
+      }
+    }
 
     // Save to file
     const success = writeJsonFile(this.dataFile, items);
