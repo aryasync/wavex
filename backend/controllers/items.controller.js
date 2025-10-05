@@ -149,8 +149,8 @@ class ItemController {
       const { id } = req.params;
       const { deleteAll } = req.query;
 
-      // Check if deleteAll parameter is provided (only accept boolean true)
-      if (deleteAll === true) {
+      // Check if deleteAll parameter is provided (accept string 'true' or boolean true)
+      if (deleteAll === 'true' || deleteAll === true) {
         const result = await this.itemService.deleteAllItems();
         return res.json({
           success: true,

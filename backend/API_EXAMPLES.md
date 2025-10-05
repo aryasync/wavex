@@ -87,7 +87,7 @@ Content-Type: application/json
 # Delete item
 DELETE /api/items/123
 
-# Delete all items (only accepts boolean true)
+# Delete all items (accepts 'true' or true)
 DELETE /api/items/any-id?deleteAll=true
 ```
 
