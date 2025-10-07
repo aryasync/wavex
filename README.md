@@ -48,7 +48,7 @@ WaveX is an intelligent fridge management system that helps reduce food waste by
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/aryasync/wavex.git
    cd wavex
    ```
 
