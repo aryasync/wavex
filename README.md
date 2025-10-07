@@ -1,6 +1,7 @@
 # 🌊 WaveX - Smart Fridge Tracker
 
-> Demo Video
+
+https://github.com/user-attachments/assets/c84a104a-e522-4deb-a5ea-1c5447a2a2bc
 
 ## 📱 Overview
 
