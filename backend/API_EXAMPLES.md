@@ -1,6 +1,6 @@
 # API Examples
 
-Simple examples showing how to use the Tsunami Fridge API.
+Simple examples showing how to use the WaveX API.
 
 ## Items API
 
